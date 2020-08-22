@@ -3,3 +3,7 @@
   font-size: 2rem;
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.sidebar {
+  background: #202020 center center no-repeat url(/public/background.jpg);
+}
