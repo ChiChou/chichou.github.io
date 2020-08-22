@@ -67,23 +67,23 @@ But what I want is a root shell!
 
 The flaw resides in thetmdiagnose binary, which is not too hard to reverse. Its implementation is just some external shell commands wrapped in NSTask calls and the terminal output is honest:
 
-> 2018–06–24 18:03:46.131 tmdiagnose[15529:a03] Executing `/usr/sbin/spindump -notarget 15 -file /private/var/tmp/cc@ant.tmdiagnostic/system_state_18.03.46/spindump.txt`
-> 2018–06–24 18:03:48.206 tmdiagnose[15529:1d03] Executing `/usr/bin/fs_usage -w -t 10 -e tmdiagnose`
-> 2018–06–24 18:04:10.392 tmdiagnose[15529:4d03] Executing `/bin/ps auxh`
-> 2018–06–24 18:04:10.652 tmdiagnose[15529:4d03] Executing `/usr/bin/top -l 10`
-> 2018–06–24 18:04:20.631 tmdiagnose[15529:5203] Executing `/usr/bin/powermetrics -i 1000 -n 10 — show-all`
-> 2018–06–24 18:04:31.227 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/backupd.txt backupd 5`
-> 2018–06–24 18:04:36.915 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/Finder.txt Finder 5`
-> 2018–06–24 18:04:42.351 tmdiagnose[15529:1f03] Executing `/bin/ls -la /Volumes/`
-> 2018–06–24 18:04:42.418 tmdiagnose[15529:1f03] Executing `/bin/df -H`
-> 2018–06–24 18:04:42.486 tmdiagnose[15529:1f03] Executing `/sbin/mount`
-> 2018–06–24 18:04:42.556 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil list`
-> 2018–06–24 18:04:42.692 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil cs list`
-> 2018–06–24 18:04:42.760 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil apfs list`
-> 2018–06–24 18:04:42.956 tmdiagnose[15529:1f03] Executing `/bin/bash -c /usr/sbin/diskutil list | /usr/bin/awk '/disk/ {system("/usr/sbin/diskutil info "$NF); print "*********************"}'`
-> 2018–06–24 18:06:54.482 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds'…
-> 2018–06–24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds_stores'…
-> 2018–06–24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt corespotlightd'…Did you see the bug here?
+> 2018-06-24 18:03:46.131 tmdiagnose[15529:a03] Executing `/usr/sbin/spindump -notarget 15 -file /private/var/tmp/cc@ant.tmdiagnostic/system_state_18.03.46/spindump.txt`
+> 2018-06-24 18:03:48.206 tmdiagnose[15529:1d03] Executing `/usr/bin/fs_usage -w -t 10 -e tmdiagnose`
+> 2018-06-24 18:04:10.392 tmdiagnose[15529:4d03] Executing `/bin/ps auxh`
+> 2018-06-24 18:04:10.652 tmdiagnose[15529:4d03] Executing `/usr/bin/top -l 10`
+> 2018-06-24 18:04:20.631 tmdiagnose[15529:5203] Executing `/usr/bin/powermetrics -i 1000 -n 10 — show-all`
+> 2018-06-24 18:04:31.227 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/backupd.txt backupd 5`
+> 2018-06-24 18:04:36.915 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/Finder.txt Finder 5`
+> 2018-06-24 18:04:42.351 tmdiagnose[15529:1f03] Executing `/bin/ls -la /Volumes/`
+> 2018-06-24 18:04:42.418 tmdiagnose[15529:1f03] Executing `/bin/df -H`
+> 2018-06-24 18:04:42.486 tmdiagnose[15529:1f03] Executing `/sbin/mount`
+> 2018-06-24 18:04:42.556 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil list`
+> 2018-06-24 18:04:42.692 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil cs list`
+> 2018-06-24 18:04:42.760 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil apfs list`
+> 2018-06-24 18:04:42.956 tmdiagnose[15529:1f03] Executing `/bin/bash -c /usr/sbin/diskutil list | /usr/bin/awk '/disk/ {system("/usr/sbin/diskutil info "$NF); print "*********************"}'`
+> 2018-06-24 18:06:54.482 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds'…
+> 2018-06-24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds_stores'…
+> 2018-06-24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt corespotlightd'…Did you see the bug here?
 
 There are two exploitable bugs.
 

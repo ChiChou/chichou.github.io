@@ -111,13 +111,13 @@ The only difference is the lpFile argument. So there's possibility that the deve
 
 After searching for a while, I found some interesting cases that related to ShellExecute and url protocol.
 
-## MS07–061 (CVE-2007–3896)
+## MS07-061 (CVE-2007-3896)
 
 [Microsoft Security Bulletin MS07-061 - Critical](https://docs.microsoft.com/en-us/security-updates/securitybulletins/2007/ms07-061 "https://docs.microsoft.com/en-us/security-updates/securitybulletins/2007/ms07-061")
 
 > A remote code execution vulnerability exists in the way that the Windows shell handles specially crafted URIs that are passed to it. If the Windows shell did not sufficiently validate these URIs, an attacker could exploit this vulnerability and execute arbitrary code.
 
-The advisory didn't give much detail, but according to a [TrendMicro article](https://www.trendmicro.com/vinfo/id/threat-encyclopedia/vulnerability/920/multiple-browser-uri-handlers-command-injection-vulnerabilities), CVE-2007–3896 and CVE-2007–3845 are variants of CVE-2007–4041, which can be found in BugZilla.
+The advisory didn't give much detail, but according to a [TrendMicro article](https://www.trendmicro.com/vinfo/id/threat-encyclopedia/vulnerability/920/multiple-browser-uri-handlers-command-injection-vulnerabilities), CVE-2007-3896 and CVE-2007-3845 are variants of CVE-2007-4041, which can be found in BugZilla.
 
 [389580 - (CVE-2007-4041) some schemes with %00 launch unexpected handlers on windows](https://bugzilla.mozilla.org/show_bug.cgi?id=389580#c17)
 
@@ -129,7 +129,7 @@ One of the test case:
 
 At first the report is for Firefox, but soon they realized that it was a shell32 bug. The precent symbol broke everything. It was supposed to invoke a mail client, but somehow a command got executed. Damn!
 
-## MS10–007 (CVE-2010–0027)
+## MS10-007 (CVE-2010-0027)
 
 Three years after, another vulnerability in ShellExecute's inner implementation was found: <https://docs.microsoft.com/en-us/security-updates/SecurityBulletins/2010/ms10-007>
 
@@ -137,7 +137,7 @@ Three years after, another vulnerability in ShellExecute's inner implementation 
 
 `xyz://www.example.com#://../../C:/windows/system32/calc.exe`
 
-## CVE-2007–3670
+## CVE-2007-3670
 
 This is a argument injection affects both Firefox and ThunderBird.
 
@@ -179,7 +179,7 @@ process.run(true,['/k%20echo%20hello%20from%20larholm.com'],1);
 
 **The electron bug follows exactly the same pattern with it: the quote in url, and code in command line switches.**
 
-## CVE-2007–3186
+## CVE-2007-3186
 
 Thor Larholm also found another exploit for Safari. The snippet below:
 
@@ -292,9 +292,9 @@ You can see many interesting protocols in the list. Will there be any new bug to
 
 [1]. [Registering an Application to a URI Scheme](https://msdn.microsoft.com/en-us/library/aa767914%28v=vs.85%29.aspx)
 [2]. [About Dynamic Data Exchange](https://msdn.microsoft.com/en-us/library/windows/desktop/ms648774%28v=vs.85%29.aspx)
-[3]. [Microsoft Security Bulletin MS07–061 — Critical](https://docs.microsoft.com/en-us/security-updates/SecurityBulletins/2007/ms07-061)
+[3]. [Microsoft Security Bulletin MS07-061 — Critical](https://docs.microsoft.com/en-us/security-updates/SecurityBulletins/2007/ms07-061)
 [4]. <https://www.trendmicro.com/vinfo/id/threat-encyclopedia/vulnerability/920/multiple-browser-uri-handlers-command-injection-vulnerabilities>
-[5]. [Microsoft Security Bulletin MS10–007 — Critical](https://technet.microsoft.com/library/security/ms10-007)
+[5]. [Microsoft Security Bulletin MS10-007 — Critical](https://technet.microsoft.com/library/security/ms10-007)
 [6]. [URI Use and Abuse](https://www.blackhat.com/presentations/bh-dc-08/McFeters-Rios-Carter/Presentation/bh-dc-08-mcfeters-rios-carter.pdf)
 [7]. [Attack Surface Extended by URL Schemes](https://conference.hitb.org/hitbsecconf2017ams/materials/D2T2%20-%20Yu%20Hong%20-%20Attack%20Surface%20Extended%20by%20URL%20Schemes.pdf)
 

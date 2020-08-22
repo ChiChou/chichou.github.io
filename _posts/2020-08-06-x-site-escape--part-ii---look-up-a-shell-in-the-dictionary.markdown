@@ -233,6 +233,6 @@ Since the MobileAssets framework does not set com.apple.quarantine attribute, we
 ## Timeline
 
 * around the beginning of 2019: developed poc and found a chain to exploit
-* 2019–09: sadly found the final step, command execution via file:/// URL is patched
-* 2019–09–27: reported to Apple
-* 2020–08–04: Apple addressed a beta release for the complete patch
+* 2019-09: sadly found the final step, command execution via file:/// URL is patched
+* 2019-09-27: reported to Apple
+* 2020-08-04: Apple addressed a beta release for the complete patch

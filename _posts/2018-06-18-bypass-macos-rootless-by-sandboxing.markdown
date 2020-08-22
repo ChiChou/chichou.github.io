@@ -57,7 +57,7 @@ Load Address: 0x10515f000
 Identifier: com.apple.finder
 Version: 10.13.5 (10.13.5)
 Build Info: Finder_FE-1054005004000000~3
-Code Type: X86–64
+Code Type: X86-64
 Parent Process: ??? [1]
 ```
 
@@ -136,7 +136,7 @@ The bug has been fixed in Mojave Beta, no more external library, finally.
 
 ![](/img/vAP5r0UBzDCQcnPl8WjDqA.png)
 
-#### Update 2019–05–14
+#### Update 2019-05-14
 
 This bug be exploited for kernel privilege escalation. Please refer to the slides for my HITB Ams 2019 talk:
 
