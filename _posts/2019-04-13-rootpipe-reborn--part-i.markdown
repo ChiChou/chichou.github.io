@@ -2,6 +2,7 @@
 layout:	post
 title:	"Rootpipe Reborn (Part I): TimeMachine Command Injection"
 date:	2019-04-13
+show_excerpt: true
 ---
 
 macOS Mojave 10.14.4 has patched two LPE flaws I reported:
@@ -15,6 +16,8 @@ They are both userspace XPC logic bugs, simple and reliable to get root privileg
 This talk revealed some very interesting LPE bugs found in diagnostic tool of the system: [$hell on Earth: From Browser to System Compromise — Black Hat](https://www.blackhat.com/docs/us-16/materials/us-16-Molinyawe-Shell-On-Earth-From-Browser-To-System-Compromise-wp.pdf)
 
 So I started looking at these services:
+
+<!-- more -->
 
 ![](/img/diagext.png)
 
