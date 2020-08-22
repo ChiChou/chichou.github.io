@@ -5,8 +5,6 @@ date:	2018-06-18
 image: /img/elevated.png
 ---
 
-![](/img/elevated.png)
-
 This bug has been fixed in Mojave Beta, but still present in latest High Sierra (10.13.5). It's a logic bug that an entitled binary tries to load an insecure external library controllable by environment variable. To exploit it we need to abuse sandbox, which is interesting that sometimes a mitigation could be turned to an exploit.
 
 CoreSymbolication(`/System/Library/PrivateFrameworks/CoreSymbolication.framework`) has some private api for symbolication. When demangling swift application symbols, it tries to load external library in following order:
