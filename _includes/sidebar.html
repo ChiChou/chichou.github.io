@@ -26,11 +26,13 @@
         {% endif %}
       {% endfor %}
 
-      <hr>
-
-      {% for page in site.links %}
-        <a class="sidebar-nav-item" target="_blank" href="{{ page[1] }}">{{ page[0] }}</a>
+      <div class="social">
+      {% for page in site.links %}        
+        <a class="sidebar-nav-item" target="_blank" href="{{ page[1] }}">
+          <img src="/public/{{ page[0] | downcase }}.svg" alt="{{ page[0] }}" class="link">
+        </a>
       {% endfor %}
+      </div>
 
     </nav>
 

@@ -21,3 +21,25 @@ h1.post-title {
 .post a, .post code, .post blockquote {
   overflow-wrap: break-word;
 }
+
+.social {
+  margin-top: 1rem;
+}
+
+.social > .sidebar-nav-item {
+  display: inline-block;
+  opacity: 0.75;
+  transform: scale(0.8);
+  transition: 0.2s ease-in opacity, 0.2s ease-in-out transform;
+}
+
+.social > .sidebar-nav-item:hover {
+  opacity: 1;
+  transform: scale(1.0);
+}
+
+.social > .sidebar-nav-item > img {
+  display: inline-block;
+  width: 2rem;
+  margin: 0.5rem;
+}
