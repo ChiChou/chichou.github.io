@@ -2,6 +2,7 @@
 layout:	post
 title:	"Rootpipe Reborn (Part II): CVE-2019-8565 Feedback Assistant Race Condition"
 date:	2019-04-21
+show_excerpt: true
 ---
 
 ## Background

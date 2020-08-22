@@ -3,6 +3,7 @@ layout:	post
 title:	"X Site eScape (Part II): Look Up a Shell in the Dictionary"
 date:	2020-08-06
 image: /img/urs-JSS0bQiT9Wd9gwzA-A.png
+show_excerpt: true
 ---
 
 This post is the last part of this silly series, but I think it's the only noteworthy one. The exploit chain triggers two XSS across two privileged WebViews and bypasses GateKeeper to execute arbitrary native code outside the sandbox. It works on both High Sierra and Mojave.
