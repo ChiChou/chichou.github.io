@@ -4,6 +4,20 @@
   font-family: Arial, Helvetica, sans-serif;
 }
 
+h1.post-title {
+  font-weight: 100;
+}
+
+.sidebar-nav > hr {
+  margin: 1rem 0;
+  border-top-color: #7d7d7d73;
+  border-bottom-color: #ffffff75;
+}
+
 .sidebar {
   background: #202020 center center no-repeat url(/public/background.jpg);
+}
+
+.post a, .post code {
+  overflow-wrap: break-word;
 }
