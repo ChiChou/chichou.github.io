@@ -21,6 +21,7 @@ h1.post-title {
 
 .post a, .post code, .post blockquote {
   overflow-wrap: break-word;
+  word-break: break-all;
 }
 
 .social {
