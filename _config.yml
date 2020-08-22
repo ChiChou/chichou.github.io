@@ -6,9 +6,9 @@ highlighter:      pygments
 permalink:        pretty
 
 # Setup
-title:            Zhi
-tagline:          'New Blog'
-description:      ''
+title:            CodeColorist
+tagline:          'Final Lullaby'
+description:      'Moved my tech blog here'
 url:              https://chichou.github.io
 baseurl:          /
 
