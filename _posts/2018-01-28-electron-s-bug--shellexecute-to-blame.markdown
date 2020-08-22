@@ -1,6 +1,6 @@
 ---
 layout:	post
-title:	"Electron's bug, ShellExecute to blame?"
+title:	"Electron's Bug, ShellExecute to Blame?"
 date:	2018-01-28
 show_excerpt: true
 ---
@@ -76,8 +76,10 @@ SHELL32!ShellExecuteExW:
 ```cpp
 if (reinterpret_cast<ULONG_PTR>(ShellExecuteA(NULL, "open",
  escaped_url.c_str(), NULL, NULL,
- SW_SHOWNORMAL)) <= 32) {Edge is an UWP app, which calls SHELL32!CDefFolderMenu::InvokeCommand
+ SW_SHOWNORMAL)) <= 32) {
 ```
+
+Edge is an UWP app, which calls SHELL32!CDefFolderMenu::InvokeCommand
 
 ```
 KERNEL32!CreateProcessWStub:
