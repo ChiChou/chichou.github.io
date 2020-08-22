@@ -15,7 +15,8 @@ h1.post-title {
 }
 
 .sidebar {
-  background: #202020 center center no-repeat url(/public/background.jpg);
+  background: #202020 bottom center no-repeat url(/public/background.jpg);
+  background-size: cover;
 }
 
 .post a, .post code, .post blockquote {
