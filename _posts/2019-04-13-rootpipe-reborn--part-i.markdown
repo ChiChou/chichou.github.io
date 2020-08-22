@@ -23,21 +23,21 @@ So I started looking at these services:
 Functionalities of these helpers are similar. Let's take a closer look at `timemachine.helper`. The interface is extremely simple:
 
 ```objectivec
-➜ ~ r2 /System/Library/PrivateFrameworks/DiagnosticExtensions.framework/PlugIns/osx-timemachine.appex/Contents/XPCServices/timemachinehelper  
- — You crackme up!  
-[0x100001830]> aaa  
-[x] Analyze all flags starting with sym. and entry0 (aa)  
-[x] Analyze function calls (aac)  
-[x] Analyze len bytes of instructions for references (aar)  
-[x] Constructing a function name for fcn.* and sym.func.* functions (aan)  
-[x] Type matching analysis for all functions (afta)  
-[x] Use -AA or aaaa to perform additional experimental analysis.  
-[0x100001830]> icc  
-@interface HelperDelegate :  
-{  
-}  
-- (char) listener:shouldAcceptNewConnection:  
-- (void) runDiagnosticWithDestinationDir:replyURL:  
+➜ ~ r2 /System/Library/PrivateFrameworks/DiagnosticExtensions.framework/PlugIns/osx-timemachine.appex/Contents/XPCServices/timemachinehelper
+ — You crackme up!
+[0x100001830]> aaa
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze function calls (aac)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Constructing a function name for fcn.* and sym.func.* functions (aan)
+[x] Type matching analysis for all functions (afta)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[0x100001830]> icc
+@interface HelperDelegate :
+{
+}
+- (char) listener:shouldAcceptNewConnection:
+- (void) runDiagnosticWithDestinationDir:replyURL:
 @end
 ```
 
@@ -48,7 +48,7 @@ It simply takes an `NSURL` as a destination directory to run the command `/usr/b
 While it doesn't perform any check on the destination, you can put random garbage (the diagnostic logs) to any existing directory without rootless protection. The other helpers have the similar problem. Apple patched this flaw as CVE-2019-8530:
 
 > XPC
-> 
+>
 > Available for: iPhone 5s and later, iPad Air and later and iPod touch 6th generation
 >
 > Impact: A malicious application may be able to overwrite arbitrary files
@@ -67,22 +67,22 @@ But what I want is a root shell!
 
 The flaw resides in thetmdiagnose binary, which is not too hard to reverse. Its implementation is just some external shell commands wrapped in NSTask calls and the terminal output is honest:
 
-> 2018–06–24 18:03:46.131 tmdiagnose[15529:a03] Executing `/usr/sbin/spindump -notarget 15 -file /private/var/tmp/cc@ant.tmdiagnostic/system_state_18.03.46/spindump.txt`  
-> 2018–06–24 18:03:48.206 tmdiagnose[15529:1d03] Executing `/usr/bin/fs_usage -w -t 10 -e tmdiagnose`  
-> 2018–06–24 18:04:10.392 tmdiagnose[15529:4d03] Executing `/bin/ps auxh`  
-> 2018–06–24 18:04:10.652 tmdiagnose[15529:4d03] Executing `/usr/bin/top -l 10`  
-> 2018–06–24 18:04:20.631 tmdiagnose[15529:5203] Executing `/usr/bin/powermetrics -i 1000 -n 10 — show-all`  
-> 2018–06–24 18:04:31.227 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/backupd.txt backupd 5`  
-> 2018–06–24 18:04:36.915 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/Finder.txt Finder 5`  
-> 2018–06–24 18:04:42.351 tmdiagnose[15529:1f03] Executing `/bin/ls -la /Volumes/`  
-> 2018–06–24 18:04:42.418 tmdiagnose[15529:1f03] Executing `/bin/df -H`  
-> 2018–06–24 18:04:42.486 tmdiagnose[15529:1f03] Executing `/sbin/mount`  
-> 2018–06–24 18:04:42.556 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil list`  
-> 2018–06–24 18:04:42.692 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil cs list`  
-> 2018–06–24 18:04:42.760 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil apfs list`  
+> 2018–06–24 18:03:46.131 tmdiagnose[15529:a03] Executing `/usr/sbin/spindump -notarget 15 -file /private/var/tmp/cc@ant.tmdiagnostic/system_state_18.03.46/spindump.txt`
+> 2018–06–24 18:03:48.206 tmdiagnose[15529:1d03] Executing `/usr/bin/fs_usage -w -t 10 -e tmdiagnose`
+> 2018–06–24 18:04:10.392 tmdiagnose[15529:4d03] Executing `/bin/ps auxh`
+> 2018–06–24 18:04:10.652 tmdiagnose[15529:4d03] Executing `/usr/bin/top -l 10`
+> 2018–06–24 18:04:20.631 tmdiagnose[15529:5203] Executing `/usr/bin/powermetrics -i 1000 -n 10 — show-all`
+> 2018–06–24 18:04:31.227 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/backupd.txt backupd 5`
+> 2018–06–24 18:04:36.915 tmdiagnose[15529:a03] Executing `/usr/bin/sample -file /private/var/tmp/cc@ant.tmdiagnostic/samples/Finder.txt Finder 5`
+> 2018–06–24 18:04:42.351 tmdiagnose[15529:1f03] Executing `/bin/ls -la /Volumes/`
+> 2018–06–24 18:04:42.418 tmdiagnose[15529:1f03] Executing `/bin/df -H`
+> 2018–06–24 18:04:42.486 tmdiagnose[15529:1f03] Executing `/sbin/mount`
+> 2018–06–24 18:04:42.556 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil list`
+> 2018–06–24 18:04:42.692 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil cs list`
+> 2018–06–24 18:04:42.760 tmdiagnose[15529:1f03] Executing `/usr/sbin/diskutil apfs list`
 > 2018–06–24 18:04:42.956 tmdiagnose[15529:1f03] Executing `/bin/bash -c /usr/sbin/diskutil list | /usr/bin/awk '/disk/ {system("/usr/sbin/diskutil info "$NF); print "*********************"}'`
-> 2018–06–24 18:06:54.482 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds'…  
-> 2018–06–24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds_stores'…  
+> 2018–06–24 18:06:54.482 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds'…
+> 2018–06–24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt mds_stores'…
 > 2018–06–24 18:06:54.485 mddiagnose[15688:1755714] Executing '/usr/local/bin/ddt corespotlightd'…Did you see the bug here?
 
 There are two exploitable bugs.
@@ -103,21 +103,21 @@ But look at this line, it lists every mounted volumes and find lines that match 
 Is the shell command really controllable?
 
 ```
-➜ ~ /usr/sbin/diskutil list  
-/dev/disk0 (internal, physical):  
- #: TYPE NAME SIZE IDENTIFIER  
- 0: GUID_partition_scheme *251.0 GB disk0  
- 1: EFI EFI 209.7 MB disk0s1  
- 2: Apple_APFS Container disk1 250.8 GB disk0s2/dev/disk1 (synthesized):  
- #: TYPE NAME SIZE IDENTIFIER  
- 0: APFS Container Scheme - +250.8 GB disk1  
- Physical Store disk0s2  
- 1: APFS Volume Macintosh HD 231.8 GB disk1s1  
- 2: APFS Volume Preboot 44.5 MB disk1s2  
- 3: APFS Volume Recovery 517.0 MB disk1s3  
+➜ ~ /usr/sbin/diskutil list
+/dev/disk0 (internal, physical):
+ #: TYPE NAME SIZE IDENTIFIER
+ 0: GUID_partition_scheme *251.0 GB disk0
+ 1: EFI EFI 209.7 MB disk0s1
+ 2: Apple_APFS Container disk1 250.8 GB disk0s2/dev/disk1 (synthesized):
+ #: TYPE NAME SIZE IDENTIFIER
+ 0: APFS Container Scheme - +250.8 GB disk1
+ Physical Store disk0s2
+ 1: APFS Volume Macintosh HD 231.8 GB disk1s1
+ 2: APFS Volume Preboot 44.5 MB disk1s2
+ 3: APFS Volume Recovery 517.0 MB disk1s3
  4: APFS Volume VM 4.3 GB disk1s4
  ```
- 
+
 The only controllable column is the NAME. We can create a disk image (*.dmg) and customize its label by using `-volname` parameter of hdiutil. Mounting such an image does not require root privilege.
 
 But the problem is, the `$NF` variable points to the last column, the IDENTIFIER (e.gdisk1s1), which is impossible to customize.
@@ -149,9 +149,9 @@ The final payload is disk`t*/1` to execute /tmp/1.
 > Available for: macOS Sierra 10.12.6, macOS High Sierra 10.13.6, macOS Mojave 10.14.3
 >
 > Impact: A local user may be able to execute arbitrary shell commands
-> 
+>
 > Description: This issue was addressed with improved checks.
-> 
+>
 > CVE-2019-8513: CodeColorist of Ant-Financial LightYear Labs
 
 This bug can be exploited in the following steps:
@@ -162,4 +162,4 @@ This bug can be exploited in the following steps:
 
 It takes about 2 min to trigger the root command because you have to wait for some time costing commands to finish. Anyways, it's freaking reliable.
 
-![](/img/Pcc6QzYLjwpcicaZ4utWFQ.png)  
+![](/img/Pcc6QzYLjwpcicaZ4utWFQ.png)

@@ -45,22 +45,22 @@ Oh wait. Actually `audit_token_t` was not so trustworthy. [@5aelo](https://twitt
 The privileged XPC service com.apple.appleseed.fbahelperd has exported the following interface:
 
 ```objectivec
-@protocol FBAPrivilegedDaemon <NSObject>  
-- (void)copyLogFiles:(NSDictionary *)arg1;  
-- (void)gatherInstallLogsWithDestination:(NSURL *)arg1;  
-- (void)gatherSyslogsWithDestination:(NSURL *)arg1;  
-- (void)sampleProcessWithPID:(unsigned long long)arg1 withDestination:(NSURL *)arg2;  
-- (void)runMDSDiagnoseWithDestination:(NSURL *)arg1;  
-- (void)runTMDiagnoseWithDestination:(NSURL *)arg1;  
-- (void)runBluetoothDiagnoseWithDestination:(NSURL *)arg1 shortUserName:(NSString *)arg2;  
-- (void)runWifiDiagnoseWithDestination:(NSURL *)arg1;  
-- (void)runSysdiagnoseWithDestination:(NSURL *)arg1 arguments:(NSArray *)arg2;  
-- (void)runSysdiagnoseWithDestination:(NSURL *)arg1;  
-- (void)runMobilityReportWithDestination:(NSURL *)arg1;  
-- (void)runSystemProfileWithDetailLevel:(NSString *)arg1 destination:(NSURL *)arg2;  
-- (void)stopDaemon;  
-- (void)showPrivileges;  
-- (void)performReadyCheck;  
+@protocol FBAPrivilegedDaemon <NSObject>
+- (void)copyLogFiles:(NSDictionary *)arg1;
+- (void)gatherInstallLogsWithDestination:(NSURL *)arg1;
+- (void)gatherSyslogsWithDestination:(NSURL *)arg1;
+- (void)sampleProcessWithPID:(unsigned long long)arg1 withDestination:(NSURL *)arg2;
+- (void)runMDSDiagnoseWithDestination:(NSURL *)arg1;
+- (void)runTMDiagnoseWithDestination:(NSURL *)arg1;
+- (void)runBluetoothDiagnoseWithDestination:(NSURL *)arg1 shortUserName:(NSString *)arg2;
+- (void)runWifiDiagnoseWithDestination:(NSURL *)arg1;
+- (void)runSysdiagnoseWithDestination:(NSURL *)arg1 arguments:(NSArray *)arg2;
+- (void)runSysdiagnoseWithDestination:(NSURL *)arg1;
+- (void)runMobilityReportWithDestination:(NSURL *)arg1;
+- (void)runSystemProfileWithDetailLevel:(NSString *)arg1 destination:(NSURL *)arg2;
+- (void)stopDaemon;
+- (void)showPrivileges;
+- (void)performReadyCheck;
 @end
 ```
 

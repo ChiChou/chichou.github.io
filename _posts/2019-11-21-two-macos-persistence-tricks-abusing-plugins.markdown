@@ -13,7 +13,7 @@ Some entitlements can mark an executable as an exception.
 `AMFI.kext!platformHardenFlags`:
 
 ```c
-if (dict_has_entitlement(dict, "com.apple.security.cs.disable-library-validation") || 
+if (dict_has_entitlement(dict, "com.apple.security.cs.disable-library-validation") ||
     dict_has_entitlement(dict, "com.apple.private.cs.automator-plugins")) {
   flag &= 0xFFFFDFEF;
 }

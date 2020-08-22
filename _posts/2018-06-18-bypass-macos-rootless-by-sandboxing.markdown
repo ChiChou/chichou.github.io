@@ -34,39 +34,39 @@ Apple has built-in `com.apple.SamplingTools` in:
 And they are entitled:
 
 ```shell
-➜ ~ jtool --ent `which symbols`  
-<?xml version="1.0" encoding="UTF-8"?>  
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "<http://www.apple.com/DTDs/PropertyList-1.0.dtd>">  
-<plist version="1.0">  
-<dict>  
- <key>com.apple.private.kernel.get-kext-info</key>  
- <true/>  
- <key>com.apple.system-task-ports</key>  
- <true/>  
-</dict>  
+➜ ~ jtool --ent `which symbols`
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "<http://www.apple.com/DTDs/PropertyList-1.0.dtd>">
+<plist version="1.0">
+<dict>
+ <key>com.apple.private.kernel.get-kext-info</key>
+ <true/>
+ <key>com.apple.system-task-ports</key>
+ <true/>
+</dict>
 </plist>
 ```
 
 With this entitlement, SamplingTools can attach to SIP protected process with `task_for_pid`, even without root privilege.
 
 ```
-$ vmmap Finder | head -n 8  
-Process: Finder [42164]  
-Path: /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder  
-Load Address: 0x10515f000  
-Identifier: com.apple.finder  
-Version: 10.13.5 (10.13.5)  
-Build Info: Finder_FE-1054005004000000~3  
-Code Type: X86–64  
+$ vmmap Finder | head -n 8
+Process: Finder [42164]
+Path: /System/Library/CoreServices/Finder.app/Contents/MacOS/Finder
+Load Address: 0x10515f000
+Identifier: com.apple.finder
+Version: 10.13.5 (10.13.5)
+Build Info: Finder_FE-1054005004000000~3
+Code Type: X86–64
 Parent Process: ??? [1]
 ```
 
 LLDB fails even it's root:
 
 ```
-$ sudo lldb -n Finder  
-Password:  
-(lldb) process attach --name "Finder"  
+$ sudo lldb -n Finder
+Password:
+(lldb) process attach --name "Finder"
 error: attach failed: cannot attach to process due to System Integrity Protection
 ```
 
@@ -81,10 +81,10 @@ Actually we can just block them with a sandbox. **Yeah, use the security facilit
 ```lisp
 (version 1)
 (allow default)
-(deny file-read*  
-  (literal "/System/Library/PrivateFrameworks/Swift/libswiftDemangle.dylib")  
-  (literal "/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib")  
-  (literal "/usr/lib/libswiftDemangle.dylib")  
+(deny file-read*
+  (literal "/System/Library/PrivateFrameworks/Swift/libswiftDemangle.dylib")
+  (literal "/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib")
+  (literal "/usr/lib/libswiftDemangle.dylib")
 )
 ```
 
@@ -94,35 +94,35 @@ Now we have a second problem. It crashes.
 
 ```
 System Integrity Protection: enabled
-Crashed Thread: 0 Dispatch queue: com.apple.main-threadException Type: EXC_BAD_ACCESS (Code Signature Invalid)  
-Exception Codes: 0x0000000000000032, 0x000000010d745000  
+Crashed Thread: 0 Dispatch queue: com.apple.main-threadException Type: EXC_BAD_ACCESS (Code Signature Invalid)
+Exception Codes: 0x0000000000000032, 0x000000010d745000
 Exception Note: EXC_CORPSE_NOTIFY
 Termination Reason: Namespace CODESIGNING, Code 0x2
 kernel messages:
-External Modification Warnings:  
+External Modification Warnings:
 Process used task_for_pid().
-VM Regions Near 0x10d745000:  
- MALLOC_LARGE 000000010d70a000-000000010d745000 [ 236K] rw-/rwx SM=PRV   
---> mapped file 000000010d745000-000000010d746000 [ 4K] r-x/r-x SM=PRV Object_id=2929ab85  
- mapped file 000000010d748000-000000010d762000 [ 104K] r--/r-- SM=ALI Object_id=2af85085Application Specific Information:  
-dyld: in dlopen()  
+VM Regions Near 0x10d745000:
+ MALLOC_LARGE 000000010d70a000-000000010d745000 [ 236K] rw-/rwx SM=PRV
+--> mapped file 000000010d745000-000000010d746000 [ 4K] r-x/r-x SM=PRV Object_id=2929ab85
+ mapped file 000000010d748000-000000010d762000 [ 104K] r--/r-- SM=ALI Object_id=2af85085Application Specific Information:
+dyld: in dlopen()
 /var/folders/4d/1_vz_55x0mn_w1cyjwr9w42c0000gn/T/tmp.0b5SeUjh/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib
-12 libdyld.dylib 0x00007fff66c9fd86 dlopen + 86  
-13 com.apple.CoreSymbolication 0x00007fff52d15332 invocation function for block in call_external_demangle(char const*) + 348  
-14 libdispatch.dylib 0x00007fff66c64e08 _dispatch_client_callout + 8  
-15 libdispatch.dylib 0x00007fff66c64dbb dispatch_once_f + 41  
-16 com.apple.CoreSymbolication 0x00007fff52cb880f demangle + 298  
-17 com.apple.CoreSymbolication 0x00007fff52cb85e3 TRawSymbol<Pointer64>::name() + 75  
+12 libdyld.dylib 0x00007fff66c9fd86 dlopen + 86
+13 com.apple.CoreSymbolication 0x00007fff52d15332 invocation function for block in call_external_demangle(char const*) + 348
+14 libdispatch.dylib 0x00007fff66c64e08 _dispatch_client_callout + 8
+15 libdispatch.dylib 0x00007fff66c64dbb dispatch_once_f + 41
+16 com.apple.CoreSymbolication 0x00007fff52cb880f demangle + 298
+17 com.apple.CoreSymbolication 0x00007fff52cb85e3 TRawSymbol<Pointer64>::name() + 75
 18 com.apple.CoreSymbolication 0x00007fff52cbd88e CSSymbolGetName + 166
 ```
 
 com.apple.SamplingTools in latest macOS are code signed with [Library Validation](https://developer.apple.com/library/archive/documentation/Security/Conceptual/CodeSigningGuide/Procedures/Procedures.html) flag, so loading unsigned dylib is prohibited.
 
 ```
-➜ ~ codesign -dvvv `which symbols`  
-Executable=/usr/bin/symbols  
-Identifier=com.apple.SamplingTools  
-Format=Mach-O thin (x86_64)  
+➜ ~ codesign -dvvv `which symbols`
+Executable=/usr/bin/symbols
+Identifier=com.apple.SamplingTools
+Format=Mach-O thin (x86_64)
 CodeDirectory v=20100 size=1384 flags=**0x2000(library-validation) **hashes=36+5 location=embedded
 ```
 
