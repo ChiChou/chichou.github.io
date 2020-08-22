@@ -10,7 +10,7 @@ title:            CodeColorist
 tagline:          'Final Lullaby'
 description:      'Moved my tech blog here'
 url:              https://chichou.github.io
-baseurl:          /
+baseurl:          https://chichou.github.io/
 
 author:
   name:           'CodeColorist'
