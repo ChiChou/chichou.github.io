@@ -14,7 +14,17 @@ title: Home
 
     <span class="post-date">{{ post.date | date_to_string }}</span>
 
-    {{ post.content }}
+    {% if post.image %}
+      <img src="{{ post.image }}">
+    {% endif %}
+
+    {% if post.excerpt %}
+      {{ post.excerpt }}
+    {% else %}
+      {{ post.content | truncatewords: 100 | striphtml }}
+    {% endif %}
+
+    <a href="{{ post.url }}" class="post-more">Continue</a>
   </div>
   {% endfor %}
 </div>

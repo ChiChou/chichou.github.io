@@ -1,26 +1,35 @@
 # Dependencies
-markdown:         redcarpet
+markdown:         kramdown
 highlighter:      pygments
 
 # Permalinks
 permalink:        pretty
-relative_permalinks: true
 
 # Setup
-title:            Hyde
-tagline:          'A Jekyll theme'
-description:      'A brazen two-column <a href="http://jekyllrb.com" target="_blank">Jekyll</a> theme that pairs a prominent sidebar with uncomplicated content. Made by <a href="https://twitter.com/mdo" target="_blank">@mdo</a>.'
-url:              http://hyde.getpoole.com
+title:            Zhi
+tagline:          'New Blog'
+description:      ''
+url:              https://chichou.github.io
 baseurl:          /
 
 author:
-  name:           'Mark Otto'
-  url:            https://twitter.com/mdo
+  name:           'CodeColorist'
 
 paginate:         5
 
-# Custom vars
-version:          2.1.0
+links:
+  twitter:        https://twitter.com/CodeColorist
+  GitHub:         https://github.com/chichou
+  patreon:        https://www.patreon.com/codecolorist
 
-github:
-  repo:           https://github.com/poole/hyde
+gems:             [jekyll-gist, jekyll-paginate]
+
+plugins:
+  - jekyll-gist
+  - jekyll-paginate
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+
+excerpt_separator:  '<!-- more -->'
