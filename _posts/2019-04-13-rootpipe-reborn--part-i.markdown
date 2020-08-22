@@ -16,8 +16,6 @@ This talk revealed some very interesting LPE bugs found in diagnostic tool of th
 
 So I started looking at these services:
 
-> launchctl dumpstate | grep diagnosticextensions
-
 ![](/img/diagext.png)
 
 Functionalities of these helpers are similar. Let's take a closer look at `timemachine.helper`. The interface is extremely simple:
