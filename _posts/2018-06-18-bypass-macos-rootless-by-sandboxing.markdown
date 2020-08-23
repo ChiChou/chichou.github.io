@@ -10,10 +10,10 @@ This bug has been fixed in Mojave Beta, but still present in latest High Sierra 
 
 CoreSymbolication(`/System/Library/PrivateFrameworks/CoreSymbolication.framework`) has some private api for symbolication. When demangling swift application symbols, it tries to load external library in following order:
 
-* /System/Library/PrivateFrameworks/Swift/libswiftDemangle.dylib
-* /Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib
-* /usr/lib/libswiftDemangle.dylib
-* `${xcselect_get_developer_dir_path()}`/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib
+* `/System/Library/PrivateFrameworks/Swift/libswiftDemangle.dylib`
+* `/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib`
+* `/usr/lib/libswiftDemangle.dylib`
+* `${xcselect_get_developer_dir_path()}/Toolchains/XcodeDefault.xctoolchain/usr/lib/libswiftDemangle.dylib`
 
 <!-- more -->
 
