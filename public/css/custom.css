@@ -24,6 +24,10 @@ h1.post-title {
   word-break: break-all;
 }
 
+.post iframe {
+  max-width: 100%;
+}
+
 .social {
   margin-top: 1rem;
 }
