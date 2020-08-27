@@ -214,7 +214,7 @@ To look up a certain word in Dictionary, we can create a text selection before e
 </script>
 ```
 
-Then the defination of `ExploitStage1` will automatically pop out in this floating layer and triggers our first inter-process XSS. This window is not Dictionary app yet, it belongs to `LookupViewService` process. It's WebView has no custom delegate handler, so the default behavior inWebKitLegacy is triggered. That is, a simplelocaiton.href navigation can make a universal link jump and open another app without user confirmation.
+Then the defination of `ExploitStage1` will automatically pop out in this floating layer and triggers our first inter-process XSS. This window is not Dictionary app yet, it belongs to `LookupViewService` process. Its WebView has no custom delegate handler, so the default behavior in `WebKitLegacy` is triggered. Simply a `locaiton.href` navigation to an universal link will jump to another app without user confirmation.
 
 ```
 * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.3
