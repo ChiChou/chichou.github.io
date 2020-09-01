@@ -12,3 +12,4 @@ TODO
 * [iceboy](https://www.iceboy.org/)
 * [KC 的废墟堆](https://kingsamchen.github.io)
 * [NewbieCoder](http://newbiecoder.0ginr.com/blog/)
+* [Soha](https://soha.moe)
