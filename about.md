@@ -13,3 +13,4 @@ TODO
 * [KC 的废墟堆](https://kingsamchen.github.io)
 * [NewbieCoder](http://newbiecoder.0ginr.com/blog/)
 * [Soha](https://soha.moe)
+* [影子风衣](http://coshadow.info)
