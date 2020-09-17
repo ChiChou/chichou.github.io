@@ -26,4 +26,28 @@
 
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  {% if page.url != "/" %}
+    <!-- twitter -->
+    <meta name="twitter:site" content="@codecolorist"/>
+    <meta name="twitter:creator" content="@codecolorist"/>
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="{{ page.title }} "/>
+
+    {% if page.image %}
+      <meta name="twitter:image" content="{{ page.image }}"/>
+    {% endif %}
+
+    <!-- facebook -->
+
+    <meta property="og:url" content="{{ page.url }}" />
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content="{{ page.title }}" />
+
+    {% if page.image %}
+      <meta property="og:image" content="{{ page.image }}">
+    {% endif %}
+
+  {% endif %}
+
 </head>
