@@ -228,7 +228,7 @@ Use `dict://ExploitStage2` to finally open Dictionary app and load the second st
 
 ![](/img/dict-sbx-diagram.svg)
 
-Since the MobileAssets framework does not set com.apple.quarantine attribute, we can simple put a executable .app bundle and execute it. I've tried .terminal as well. It didn't work because Dictionary app has a com.apple.security.app-sandbox entitlement, with whom the Terminal app will decline to open the file.
+Since the MobileAssets framework does not set com.apple.quarantine attribute, we can just put an executable `.app` bundle and execute it. I've tried `.terminal` and `.command` as well. It didn't work because Dictionary app has a `com.apple.security.app-sandbox` entitlement, with whom the Terminal app will decline to open the file.
 
 ## Timeline
 
