@@ -35,17 +35,17 @@
     <meta name="twitter:title" content="{{ page.title }} "/>
 
     {% if page.image %}
-      <meta name="twitter:image" content="{{ page.image }}"/>
+      <meta name="twitter:image" content="{{ page.image | absolute_url }}"/>
     {% endif %}
 
     <!-- facebook -->
 
-    <meta property="og:url" content="{{ page.url }}" />
+    <meta property="og:url" content="{{ page.url | absolute_url }}" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="{{ page.title }}" />
 
     {% if page.image %}
-      <meta property="og:image" content="{{ page.image }}">
+      <meta property="og:image" content="{{ page.image | absolute_url }}">
     {% endif %}
 
   {% endif %}
