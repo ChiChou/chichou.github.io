@@ -19,8 +19,8 @@ The challenge is about abusing runtime feature of Objective-C to execute arbitra
 
 They are both from the Foundation framework, well-documented as below.
 
-* https://developer.apple.com/documentation/foundation/nspredicate
-* https://developer.apple.com/documentation/foundation/nsexpression
+* <https://developer.apple.com/documentation/foundation/nspredicate>
+* <https://developer.apple.com/documentation/foundation/nsexpression>
 
 Both of them accept a format string to compile to an abstract synatx tree. This is done by the function `_qfqp2_performParsing` from `Foundation.framework`.
 
