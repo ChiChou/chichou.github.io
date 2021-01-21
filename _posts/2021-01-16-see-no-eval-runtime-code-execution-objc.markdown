@@ -11,7 +11,7 @@ I designed the challenge [Dezhou Instrumentz](https://github.com/ChiChou/DezhouI
 * [Slides](https://speakerdeck.com/chichou/see-no-eval-runtime-dynamic-code-execution-in-objective-c)
 * [Screen Record](https://www.youtube.com/watch?v=dvvFWa3Nm2M)
 
-The challenge is about abusing runtime feature of Objective-C to execute arbitrary unsigned code on iOS (even with PAC). This is surprising because dynamically parse and execute code (eval) is usually seen in script interpreters, not for a compiled language like Objective-C. I didn't have too much time preparing that talk so I'm about to add more detail on the chapters it didn't cover.
+The challenge is about abusing runtime feature of Objective-C to execute arbitrary unsigned code on iOS (even with PAC). This is surprising because dynamically parsing and executing code (eval) is usually seen in script interpreters, not for a compiled language like Objective-C. I didn't have too much time preparing that talk so I'm about to add more detail on the chapters it didn't cover.
 
 <!-- more -->
 
