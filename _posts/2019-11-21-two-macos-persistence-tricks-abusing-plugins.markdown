@@ -2,7 +2,7 @@
 layout:	post
 title:	"Two macOS Persistence Tricks Abusing Plugins"
 date:	2019-11-21
-image: img/knockknock.png
+image: /img/knockknock.png
 show_excerpt: true
 ---
 
