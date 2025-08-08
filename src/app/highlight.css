@@ -1,4 +1,4 @@
-@media (prefers-color-scheme: light) {
+:not(.black) {
     /*
     Docco style used in http://jashkenas.github.com/docco/ converted by Simon Madine (@thingsinjars)
     */
@@ -102,7 +102,7 @@
     background: var(--hljs-background);
 }
 
-@media (prefers-color-scheme: dark) {
+.dark {
     :root {
         --hljs-background: #2e3440; /* Polar Night */
         --hljs-text: #d8dee9;
