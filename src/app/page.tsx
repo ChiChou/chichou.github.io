@@ -40,11 +40,14 @@ export default function Home() {
           className="absolute z-10 h-dvh w-dvw object-cover"
         >
           <source
-            src={addBasePath("/background-hdr.mp4")}
+            src={addBasePath("/videos/clouds-hdr.m4v")}
             type="video/mp4"
             media="(dynamic-range: high)"
           />
-          <source src={addBasePath("/background-sdr.webm")} type="video/webm" />
+          <source
+            src={addBasePath("/videos/venice-sdr.webm")}
+            type="video/webm"
+          />
           Your browser does not support the video tag.
         </video>
       </header>
