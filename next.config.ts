@@ -22,8 +22,6 @@ if (typeof ownerAndRepo === "string") {
   }
 }
 
-console.log("config:", nextConfig);
-
 const withMDX = createMDX({
   extension: /\.(md|mdx)$/,
 });
