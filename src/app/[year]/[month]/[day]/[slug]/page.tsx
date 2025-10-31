@@ -51,6 +51,7 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
   return {
     metadataBase: new URL("https://codecolor.ist"), // todo: move to process.env
     title,
+    description: post.data.desc,
     openGraph: {
       title,
       images: [addBasePath(post.data.image)],
