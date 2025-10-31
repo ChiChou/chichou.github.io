@@ -16,6 +16,7 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { addBasePath } from "@/app/lib/env";
 
 type Params = {
   params: Promise<{
@@ -48,10 +49,11 @@ export async function generateMetadata(props: Params): Promise<Metadata> {
   const title = `${post.data.title} | CodeColorist`;
 
   return {
+    metadataBase: new URL("https://codecolor.ist"), // todo: move to process.env
     title,
     openGraph: {
       title,
-      images: [post.data.image],
+      images: [addBasePath(post.data.image)],
     },
   };
 }
