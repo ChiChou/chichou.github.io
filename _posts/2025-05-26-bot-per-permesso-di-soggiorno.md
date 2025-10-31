@@ -4,6 +4,7 @@ title:  "Bot per lo status del permesso di soggiorno"
 date:   2025-05-26
 image:  img/2025-05-26-bot-per-permesso/cinqueterre.webp
 desc:   Trucco della vita
+published: false
 ---
 
 L'Italia è fantastica per i turisti. Ma per vivere qui, è una storia diversa.
