@@ -40,7 +40,7 @@ export default function Home() {
           className="absolute z-10 h-dvh w-dvw object-cover"
         >
           <source
-            src={addBasePath("/videos/venice-hdr.m4v")}
+            src={addBasePath("/videos/venice-hdr.mp4")}
             type="video/mp4"
             media="(dynamic-range: high)"
           />
