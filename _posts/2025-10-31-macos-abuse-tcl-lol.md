@@ -5,6 +5,8 @@ image:  img/2025-10-31-macos-abuse-tcl-lol/cover.webp
 desc:   "Yet another LOOBins"
 ---
 
+## Background
+
 I have collected macOS entitlement databases from OS X Lion (10.7) to macOS Tahoe and now host them on https://codecolor.ist/entdb/.
 
 Here are the results for `com.apple.security.cs.allow-unsigned-executable-memory` on macOS Tahoe. With this entitlement, it is possible
@@ -28,6 +30,8 @@ without codesign enforcement.
 [LOOBins](https://github.com/infosecB/LOOBins) already showed an example to load payload as plugins.
 
 `echo "load bad.dylib" | tclsh`
+
+## Shellcode Loader
 
 On macOS, Tcl comes with Ffidl preinstalled, which is an ffi library. In other words, we can execute arbitrary native calls.
 
@@ -65,6 +69,8 @@ lol 0
 
 ![img](img/2025-10-31-macos-abuse-tcl-lol/lldb.svg)
 
+## Remote Payload
+
 Tcl on macOS also ships with [http](https://wiki.tcl-lang.org/page/http) and [tls](https://wiki.tcl-lang.org/page/tls) packages. Very useful to
 download resource from remote URL.
 
@@ -83,6 +89,14 @@ puts $state(body)
 
 Putting all together we can use this genuine system binary to download and execute shellcode without dropping anything on disk, and
 even chain one more reflective loader on top of it.
+
+## Detection
+
+There are already [es_event_mprotect_t](https://developer.apple.com/documentation/endpointsecurity/es_event_mprotect_t)
+and [es_event_mmap_t](https://developer.apple.com/documentation/endpointsecurity/es_event_mmap_t) events in
+[Endpoint Security](https://developer.apple.com/documentation/endpointsecurity) API.
+
+## PAC?
 
 Unfortunately we cannot use it to sign code pointers (for LPE exploitation). There are few hardcoded bundle names in
 XNU source code that will not get PAC key enabled.
