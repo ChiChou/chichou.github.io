@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build:all": "npm run build && npm run covers && npm run images",
-    "postbuild": "cp -r public/talks .next/static/talks 2>/dev/null || true",
+    "postbuild": "npm run covers && npm run images || true",
     "start": "next start",
     "lint": "eslint",
     "images": "node scripts/images.mjs",
