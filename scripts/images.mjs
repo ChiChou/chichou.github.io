@@ -7,7 +7,7 @@ import sharp from "sharp";
 
 const POSTS_IMG_DIR = path.join(process.cwd(), "_posts", "img");
 const OUTPUT_DIR = path.join(process.cwd(), "out", "image");
-const OUTPUT_FORMATS = ["avif", "webp"];
+const OUTPUT_FORMATS = ["avif", "webp", "jpg"];
 
 async function findImages(dir) {
   const pattern = path.join(dir, "**/*.{jpg,jpeg,png}");
@@ -64,6 +64,12 @@ async function optimizeImage(imagePath) {
           .webp({
             quality: 80,
             effort: 4,
+          })
+          .toFile(outputPath);
+      } else if (format === "jpg") {
+        await image
+          .jpeg({
+            quality: 85,
           })
           .toFile(outputPath);
       }

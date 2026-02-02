@@ -12,7 +12,7 @@ interface OldPostRedirectProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getPublishedPostSlugs();
+  const slugs = await getPublishedPostSlugs();
 
   return slugs
     .map((fullSlug) => {

@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 import matter from "gray-matter";
 
@@ -17,14 +17,15 @@ export interface Post extends PostMeta {
   content: string;
 }
 
-export function getPostSlugs(): string[] {
-  return fs.readdirSync(postsDirectory).filter((file) => file.endsWith(".md"));
+export async function getPostSlugs(): Promise<string[]> {
+  const files = await fs.readdir(postsDirectory);
+  return files.filter((file) => file.endsWith(".md"));
 }
 
-export function getPostBySlug(slug: string): Post {
+export async function getPostBySlug(slug: string): Promise<Post> {
   const realSlug = slug.replace(/\.md$/, "");
   const fullPath = path.join(postsDirectory, `${realSlug}.md`);
-  const fileContents = fs.readFileSync(fullPath, "utf8");
+  const fileContents = await fs.readFile(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
   return {
@@ -38,10 +39,10 @@ export function getPostBySlug(slug: string): Post {
   };
 }
 
-export function getAllPosts(): PostMeta[] {
-  const slugs = getPostSlugs();
-  const posts = slugs
-    .map((slug) => getPostBySlug(slug))
+export async function getAllPosts(): Promise<PostMeta[]> {
+  const slugs = await getPostSlugs();
+  const posts = await Promise.all(slugs.map((slug) => getPostBySlug(slug)));
+  return posts
     .filter((post) => post.published)
     .map((post) => ({
       slug: post.slug,
@@ -52,31 +53,35 @@ export function getAllPosts(): PostMeta[] {
       published: post.published,
     }))
     .sort((a, b) => (a.date > b.date ? -1 : 1));
-  return posts;
 }
 
-export function getPublishedPostSlugs(): string[] {
-  return getPostSlugs()
-    .map((slug) => slug.replace(/\.md$/, ""))
-    .filter((slug) => getPostBySlug(slug).published);
+export async function getPublishedPostSlugs(): Promise<string[]> {
+  const slugs = await getPostSlugs();
+  const posts = await Promise.all(
+    slugs.map(async (slug) => ({
+      slug: slug.replace(/\.md$/, ""),
+      published: (await getPostBySlug(slug)).published,
+    }))
+  );
+  return posts.filter((p) => p.published).map((p) => p.slug);
 }
 
-export function getPaginatedPosts(
+export async function getPaginatedPosts(
   page: number,
   perPage: number
-): { posts: PostMeta[]; totalPages: number } {
-  const allPosts = getAllPosts();
+): Promise<{ posts: PostMeta[]; totalPages: number }> {
+  const allPosts = await getAllPosts();
   const totalPages = Math.ceil(allPosts.length / perPage);
   const start = (page - 1) * perPage;
   const posts = allPosts.slice(start, start + perPage);
   return { posts, totalPages };
 }
 
-export function getAdjacentPosts(slug: string): {
+export async function getAdjacentPosts(slug: string): Promise<{
   prev: PostMeta | null;
   next: PostMeta | null;
-} {
-  const allPosts = getAllPosts();
+}> {
+  const allPosts = await getAllPosts();
   const currentIndex = allPosts.findIndex((post) => post.slug === slug);
 
   if (currentIndex === -1) {

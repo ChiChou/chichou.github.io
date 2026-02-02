@@ -25,7 +25,7 @@ const OPTIMIZED_EXTENSIONS = [".jpg", ".jpeg", ".png"];
 
 export function getOptimizedSources(
   src: string,
-): { avif: string; webp: string } | null {
+): { avif: string; webp: string; fallback: string } | null {
   if (process.env.NODE_ENV === "development") {
     return null;
   }
@@ -46,12 +46,16 @@ export function getOptimizedSources(
     return null;
   }
 
-  // Optimized images are in /image/ not /img/
-  const basePath = src
-    .substring(0, src.lastIndexOf("."))
-    .replace(/^img\//, "image/");
+  const basePath = src.substring(0, src.lastIndexOf("."));
+
+  // Transform paths: /img/ -> /image/, /talks/covers/ -> /talks/image/
+  const transformedPath = basePath
+    .replace(/^\/?img\//, "/image/")
+    .replace(/^\/?talks\/covers\//, "/talks/image/");
+
   return {
-    avif: resolveImageUrl(`${basePath}.avif`),
-    webp: resolveImageUrl(`${basePath}.webp`),
+    avif: resolveImageUrl(`${transformedPath}.avif`),
+    webp: resolveImageUrl(`${transformedPath}.webp`),
+    fallback: resolveImageUrl(`${transformedPath}.jpg`),
   };
 }

@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  const allPosts = getAllPosts();
+  const allPosts = await getAllPosts();
   const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 
   return Array.from({ length: totalPages }, (_, i) => ({
@@ -26,7 +26,7 @@ export default async function PaginatedPage({ params }: PageProps) {
     notFound();
   }
 
-  const { posts, totalPages } = getPaginatedPosts(pageNum, POSTS_PER_PAGE);
+  const { posts, totalPages } = await getPaginatedPosts(pageNum, POSTS_PER_PAGE);
 
   if (pageNum > totalPages) {
     notFound();

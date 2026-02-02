@@ -1,3 +1,4 @@
+import { OptimizedImage } from "@/components/optimized-image";
 import { getAllTalks, type Talk } from "@/lib/talks";
 import { FileText, Video, Calendar, FileCode, Sparkles } from "lucide-react";
 
@@ -23,16 +24,11 @@ function TalkCard({ talk }: { talk: Talk }) {
       {/* Cover */}
       <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
         {talk.cover ? (
-          <picture>
-            <source srcSet={`${talk.cover}.avif`} type="image/avif" />
-            <source srcSet={`${talk.cover}.webp`} type="image/webp" />
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${talk.cover}.jpg`}
-              alt={talk.title}
-              className="w-full h-full object-cover"
-            />
-          </picture>
+          <OptimizedImage
+            src={talk.cover}
+            alt={talk.title}
+            className="w-full h-full object-cover"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-muted to-muted/50">
             <div className="text-center px-4">
@@ -81,8 +77,8 @@ function TalkCard({ talk }: { talk: Talk }) {
   );
 }
 
-export default function TalksPage() {
-  const talks = getAllTalks();
+export default async function TalksPage() {
+  const talks = await getAllTalks();
 
   return (
     <main className="max-w-4xl mx-auto px-4 pb-16 min-h-[calc(100vh-80px)]">

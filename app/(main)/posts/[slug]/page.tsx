@@ -27,7 +27,7 @@ interface PostPageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getPublishedPostSlugs();
+  const slugs = await getPublishedPostSlugs();
   return slugs.map((slug) => ({ slug }));
 }
 
@@ -36,7 +36,7 @@ export async function generateMetadata({
 }: PostPageProps): Promise<Metadata> {
   const { slug } = await params;
   try {
-    const post = getPostBySlug(slug);
+    const post = await getPostBySlug(slug);
     if (!post.published) {
       return { title: "Post Not Found" };
     }
@@ -134,7 +134,7 @@ function rehypeImageUrls() {
             type: "element",
             tagName: "img",
             properties: {
-              src: resolveImageUrl(src),
+              src: optimized.fallback,
               alt,
               loading: "lazy",
             },
@@ -272,7 +272,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
   let post;
   try {
-    post = getPostBySlug(slug);
+    post = await getPostBySlug(slug);
     if (!post.published) {
       notFound();
     }
@@ -286,7 +286,7 @@ export default async function PostPage({ params }: PostPageProps) {
     month: "long",
     day: "numeric",
   });
-  const { prev, next } = getAdjacentPosts(slug);
+  const { prev, next } = await getAdjacentPosts(slug);
 
   const MDXContent = await compileMDX(post.content);
 

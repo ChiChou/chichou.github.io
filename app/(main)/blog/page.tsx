@@ -4,8 +4,8 @@ import { Pagination } from "@/components/pagination";
 
 const POSTS_PER_PAGE = 10;
 
-export default function BlogPage() {
-  const { posts, totalPages } = getPaginatedPosts(1, POSTS_PER_PAGE);
+export default async function BlogPage() {
+  const { posts, totalPages } = await getPaginatedPosts(1, POSTS_PER_PAGE);
 
   return (
     <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 pb-16 min-h-[calc(100vh-80px)] flex flex-col">

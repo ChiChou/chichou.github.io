@@ -19,7 +19,7 @@ export const OptimizedImage = forwardRef<HTMLImageElement, OptimizedImageProps>(
           <source srcSet={optimized.avif} type="image/avif" />
           <source srcSet={optimized.webp} type="image/webp" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img ref={ref} src={imageSrc} alt={alt} {...props} />
+          <img ref={ref} src={optimized.fallback} alt={alt} {...props} />
         </picture>
       );
     }
