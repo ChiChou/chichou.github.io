@@ -178,7 +178,10 @@ function rehypeImageUrls() {
       // Unwrap standalone images/pictures from <p> tags
       if (node.tagName === "p" && node.children.length === 1) {
         const child = node.children[0] as Element;
-        if (child.type === "element" && (child.tagName === "img" || child.tagName === "picture")) {
+        if (
+          child.type === "element" &&
+          (child.tagName === "img" || child.tagName === "picture")
+        ) {
           if (parent && typeof index === "number") {
             (parent.children as Element[])[index] = child;
           }
@@ -294,7 +297,7 @@ export default async function PostPage({ params }: PostPageProps) {
     <>
       {/* Hero Section */}
       {post.image && (
-        <div className="relative w-full h-[50vh] min-h-100">
+        <div className="relative w-full aspect-video lg:aspect-auto lg:h-[40vh] lg:min-h-100">
           <OptimizedImage
             src={post.image}
             alt={post.title}
