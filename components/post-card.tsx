@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+import { resolveImageUrl } from "@/lib/config";
 import type { PostMeta } from "@/lib/posts";
 
 interface PostCardProps {
@@ -6,7 +8,7 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
-  const imageSrc = post.image.startsWith("/") ? post.image : `/${post.image}`;
+  const imageSrc = resolveImageUrl(post.image);
   const date = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -18,6 +20,7 @@ export function PostCard({ post }: PostCardProps) {
       <article className="flex flex-col sm:flex-row gap-4 sm:gap-6">
         {post.image && (
           <div className="sm:w-48 sm:flex-shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageSrc}
               alt={post.title}

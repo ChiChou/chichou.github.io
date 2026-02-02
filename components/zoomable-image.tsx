@@ -1,7 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
+
+import { resolveImageUrl } from "@/lib/config";
 
 interface ZoomableImageProps {
   src: string;
@@ -12,6 +13,8 @@ export function ZoomableImage({ src, alt }: ZoomableImageProps) {
   const [isZoomed, setIsZoomed] = useState(false);
   const [canZoom, setCanZoom] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+
+  const imageSrc = resolveImageUrl(src);
 
   useEffect(() => {
     const isSvg = src.toLowerCase().endsWith(".svg");
@@ -24,10 +27,8 @@ export function ZoomableImage({ src, alt }: ZoomableImageProps) {
     img.onload = () => {
       setCanZoom(img.naturalWidth > 600);
     };
-    img.src = src.startsWith("/") ? src : `/${src}`;
-  }, [src]);
-
-  const imageSrc = src.startsWith("/") ? src : `/${src}`;
+    img.src = imageSrc;
+  }, [src, imageSrc]);
 
   if (isZoomed) {
     return (
@@ -35,7 +36,8 @@ export function ZoomableImage({ src, alt }: ZoomableImageProps) {
         className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 cursor-zoom-out"
         onClick={() => setIsZoomed(false)}
       >
-        <Image
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={imageSrc}
           alt={alt}
           className="max-h-[90vh] max-w-[90vw] object-contain"
@@ -46,7 +48,8 @@ export function ZoomableImage({ src, alt }: ZoomableImageProps) {
 
   return (
     <span className="block my-8 -mx-4 md:-mx-16 lg:-mx-24">
-      <Image
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
         ref={imgRef}
         src={imageSrc}
         alt={alt}

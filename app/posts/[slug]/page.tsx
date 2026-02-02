@@ -2,7 +2,6 @@ import type { Element, Root, Text } from "hast";
 
 import { compile, run } from "@mdx-js/mdx";
 import type { Metadata } from "next";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import * as runtime from "react/jsx-runtime";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -14,6 +13,7 @@ import { visit } from "unist-util-visit";
 
 import { mdxComponents } from "@/components/mdx-components";
 import { TableOfContents } from "@/components/toc";
+import { resolveImageUrl } from "@/lib/config";
 import { getPostBySlug, getPublishedPostSlugs } from "@/lib/posts";
 import { extractToc } from "@/lib/toc";
 
@@ -113,12 +113,29 @@ function rehypeShiki() {
   };
 }
 
+function rehypeImageUrls() {
+  return (tree: Root) => {
+    visit(tree, "element", (node: Element) => {
+      if (node.tagName === "img" && node.properties?.src) {
+        const src = node.properties.src as string;
+        node.properties.src = resolveImageUrl(src);
+      }
+    });
+  };
+}
+
 async function compileMDX(source: string) {
   const code = await compile(source, {
     format: "md",
     outputFormat: "function-body",
     remarkPlugins: [remarkGfm],
-    rehypePlugins: [rehypeRaw, rehypeSlug, rehypeAutolinkHeadings, rehypeShiki],
+    rehypePlugins: [
+      rehypeRaw,
+      rehypeSlug,
+      rehypeAutolinkHeadings,
+      rehypeShiki,
+      rehypeImageUrls,
+    ],
   });
 
   const { default: MDXContent } = await run(String(code), {
@@ -143,7 +160,7 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const toc = extractToc(post.content);
-  const imageSrc = post.image.startsWith("/") ? post.image : `/${post.image}`;
+  const imageSrc = resolveImageUrl(post.image);
   const date = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -158,14 +175,11 @@ export default async function PostPage({ params }: PostPageProps) {
         <article className="max-w-2xl">
           {post.image && (
             <div className="-mx-4 md:-mx-16 lg:-mx-24 mb-8">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src={imageSrc}
                 alt={post.title}
-                width={1600}
-                height={900}
-                sizes="(min-width: 1280px) 896px, (min-width: 768px) 100vw, 100vw"
                 className="w-full h-auto"
-                priority
               />
             </div>
           )}
