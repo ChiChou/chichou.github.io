@@ -13,6 +13,7 @@ import { createHighlighter } from "shiki";
 import { SKIP, visit } from "unist-util-visit";
 
 import { mdxComponents } from "@/components/mdx-components";
+import { OptimizedImage } from "@/components/optimized-image";
 import { getOptimizedSources, resolveImageUrl } from "@/lib/config";
 import {
   getAdjacentPosts,
@@ -280,7 +281,6 @@ export default async function PostPage({ params }: PostPageProps) {
   }
 
   const toc = extractToc(post.content);
-  const imageSrc = resolveImageUrl(post.image);
   const date = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -295,9 +295,8 @@ export default async function PostPage({ params }: PostPageProps) {
       {/* Hero Section */}
       {post.image && (
         <div className="relative w-full h-[50vh] min-h-100">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={imageSrc}
+          <OptimizedImage
+            src={post.image}
             alt={post.title}
             className="absolute inset-0 w-full h-full object-cover"
           />
@@ -343,9 +342,8 @@ export default async function PostPage({ params }: PostPageProps) {
                     >
                       {prev.image && (
                         <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={resolveImageUrl(prev.image)}
+                          <OptimizedImage
+                            src={prev.image}
                             alt={prev.title}
                             className="w-full h-full object-cover"
                           />
@@ -370,9 +368,8 @@ export default async function PostPage({ params }: PostPageProps) {
                     >
                       {next.image && (
                         <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={resolveImageUrl(next.image)}
+                          <OptimizedImage
+                            src={next.image}
                             alt={next.title}
                             className="w-full h-full object-cover"
                           />

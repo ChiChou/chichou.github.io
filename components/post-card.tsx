@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { resolveImageUrl } from "@/lib/config";
+import { OptimizedImage } from "@/components/optimized-image";
 import type { PostMeta } from "@/lib/posts";
 
 interface PostCardProps {
@@ -8,7 +8,6 @@ interface PostCardProps {
 }
 
 export function PostCard({ post }: PostCardProps) {
-  const imageSrc = resolveImageUrl(post.image);
   const date = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -21,13 +20,12 @@ export function PostCard({ post }: PostCardProps) {
       <article className="sm:hidden relative aspect-video overflow-hidden">
         {post.image && (
           <>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageSrc}
+            <OptimizedImage
+              src={post.image}
               alt={post.title}
               className="absolute inset-0 w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
           </>
         )}
         <div className="relative z-10 h-full flex flex-col justify-end p-4 text-white">
@@ -36,9 +34,7 @@ export function PostCard({ post }: PostCardProps) {
             {post.title}
           </h2>
           {post.desc && (
-            <p className="mt-1 text-sm opacity-80 line-clamp-2">
-              {post.desc}
-            </p>
+            <p className="mt-1 text-sm opacity-80 line-clamp-2">{post.desc}</p>
           )}
         </div>
       </article>
@@ -46,10 +42,9 @@ export function PostCard({ post }: PostCardProps) {
       {/* Desktop: side by side layout */}
       <article className="hidden sm:flex sm:flex-row gap-6">
         {post.image && (
-          <div className="sm:w-48 sm:flex-shrink-0 aspect-video">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageSrc}
+          <div className="sm:w-48 sm:shrink-0 aspect-video">
+            <OptimizedImage
+              src={post.image}
               alt={post.title}
               className="w-full h-full object-cover"
             />

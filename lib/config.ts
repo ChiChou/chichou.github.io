@@ -6,7 +6,11 @@ export function resolveImageUrl(src: string): string {
   if (!src) return "";
 
   // Already absolute URL (http/https/data)
-  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) {
+  if (
+    src.startsWith("http://") ||
+    src.startsWith("https://") ||
+    src.startsWith("data:")
+  ) {
     return src;
   }
 
@@ -19,11 +23,21 @@ export function resolveImageUrl(src: string): string {
 
 const OPTIMIZED_EXTENSIONS = [".jpg", ".jpeg", ".png"];
 
-export function getOptimizedSources(src: string): { avif: string; webp: string } | null {
+export function getOptimizedSources(
+  src: string,
+): { avif: string; webp: string } | null {
+  if (process.env.NODE_ENV === "development") {
+    return null;
+  }
+
   if (!src) return null;
 
   // Skip external URLs
-  if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("data:")) {
+  if (
+    src.startsWith("http://") ||
+    src.startsWith("https://") ||
+    src.startsWith("data:")
+  ) {
     return null;
   }
 
@@ -33,7 +47,9 @@ export function getOptimizedSources(src: string): { avif: string; webp: string }
   }
 
   // Optimized images are in /image/ not /img/
-  const basePath = src.substring(0, src.lastIndexOf(".")).replace(/^img\//, "image/");
+  const basePath = src
+    .substring(0, src.lastIndexOf("."))
+    .replace(/^img\//, "image/");
   return {
     avif: resolveImageUrl(`${basePath}.avif`),
     webp: resolveImageUrl(`${basePath}.webp`),
