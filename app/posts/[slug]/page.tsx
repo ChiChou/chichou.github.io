@@ -13,7 +13,6 @@ import { createHighlighter } from "shiki";
 import { visit } from "unist-util-visit";
 
 import { mdxComponents } from "@/components/mdx-components";
-import { TableOfContents } from "@/components/toc";
 import { resolveImageUrl } from "@/lib/config";
 import {
   getAdjacentPosts,
@@ -243,94 +242,137 @@ export default async function PostPage({ params }: PostPageProps) {
   const MDXContent = await compileMDX(post.content);
 
   return (
-    <main className="max-w-2xl mx-auto px-4 pb-16 xl:max-w-5xl">
-      <div className="xl:grid xl:grid-cols-[1fr_200px] xl:gap-8">
-        <article className="max-w-2xl">
-          {post.image && (
-            <div className="-mx-4 md:-mx-16 lg:-mx-24 mb-8">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={imageSrc} alt={post.title} className="w-full h-auto" />
-            </div>
-          )}
-
-          <header className="mb-8">
-            <time className="text-sm text-muted-foreground">{date}</time>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-              {post.title}
-            </h1>
-          </header>
-
-          <div className="prose-custom">
-            <MDXContent components={mdxComponents} />
-          </div>
-
-          {/* Prev/Next Navigation */}
-          {(prev || next) && (
-            <nav className="mt-16 pt-8 border-t border-muted">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {prev ? (
-                  <Link
-                    href={`/posts/${prev.slug}/`}
-                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
-                  >
-                    {prev.image && (
-                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={resolveImageUrl(prev.image)}
-                          alt={prev.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <span className="text-xs text-muted-foreground">
-                        Previous
-                      </span>
-                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
-                        {prev.title}
-                      </h3>
-                    </div>
-                  </Link>
-                ) : (
-                  <div />
-                )}
-                {next ? (
-                  <Link
-                    href={`/posts/${next.slug}/`}
-                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
-                  >
-                    {next.image && (
-                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={resolveImageUrl(next.image)}
-                          alt={next.title}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <span className="text-xs text-muted-foreground">
-                        Next
-                      </span>
-                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
-                        {next.title}
-                      </h3>
-                    </div>
-                  </Link>
-                ) : (
-                  <div />
-                )}
+    <>
+      {/* Hero Section */}
+      {post.image && (
+        <div className="relative w-full h-[50vh] min-h-100 -mt-6">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageSrc}
+            alt={post.title}
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+            <div className="max-w-2xl mx-auto">
+              <div className="inline-block px-4 py-3 rounded-lg">
+                <time className="text-sm text-white/80">{date}</time>
+                <h1 className="mt-2 text-2xl md:text-4xl font-semibold tracking-tight text-white">
+                  {post.title}
+                </h1>
               </div>
-            </nav>
-          )}
-        </article>
+            </div>
+          </div>
+        </div>
+      )}
 
-        <aside className="hidden xl:block">
-          <TableOfContents items={toc} />
-        </aside>
-      </div>
-    </main>
+      {/* Fallback header when no image */}
+      {!post.image && (
+        <header className="max-w-2xl mx-auto px-4 pt-8 pb-4">
+          <time className="text-sm text-muted-foreground">{date}</time>
+          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+            {post.title}
+          </h1>
+        </header>
+      )}
+
+      <main className="max-w-5xl mx-auto px-4 pb-16">
+        <div className="lg:grid lg:grid-cols-[1fr_200px] lg:gap-12">
+          <article className="max-w-2xl">
+            <div className="prose-custom pt-8">
+              <MDXContent components={mdxComponents} />
+            </div>
+
+            {/* Prev/Next Navigation */}
+            {(prev || next) && (
+              <nav className="mt-16 pt-8 border-t border-muted">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {prev ? (
+                    <Link
+                      href={`/posts/${prev.slug}/`}
+                      className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
+                    >
+                      {prev.image && (
+                        <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={resolveImageUrl(prev.image)}
+                            alt={prev.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs text-muted-foreground">
+                          Previous
+                        </span>
+                        <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                          {prev.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div />
+                  )}
+                  {next ? (
+                    <Link
+                      href={`/posts/${next.slug}/`}
+                      className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
+                    >
+                      {next.image && (
+                        <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={resolveImageUrl(next.image)}
+                            alt={next.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <span className="text-xs text-muted-foreground">
+                          Next
+                        </span>
+                        <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                          {next.title}
+                        </h3>
+                      </div>
+                    </Link>
+                  ) : (
+                    <div />
+                  )}
+                </div>
+              </nav>
+            )}
+          </article>
+
+          {/* Table of Contents */}
+          {toc.length > 0 && (
+            <aside className="hidden lg:block pt-8">
+              <nav className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-auto">
+                <h2 className="text-sm font-medium text-muted-foreground mb-4">
+                  On this page
+                </h2>
+                <ul className="space-y-2 text-sm">
+                  {toc.map((item) => (
+                    <li
+                      key={item.id}
+                      style={{ paddingLeft: `${(item.level - 2) * 12}px` }}
+                    >
+                      <a
+                        href={`#${item.id}`}
+                        className="block py-1 text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        {item.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </aside>
+          )}
+        </div>
+      </main>
+    </>
   );
 }
