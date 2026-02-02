@@ -41,7 +41,7 @@ export default async function PaginatedPage({ params }: PageProps) {
           ))}
         </div>
       </div>
-      <Pagination currentPage={pageNum} totalPages={totalPages} />
+      <Pagination currentPage={pageNum} totalPages={totalPages} basePath="/blog" />
     </main>
   );
 }

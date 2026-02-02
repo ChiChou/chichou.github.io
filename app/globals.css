@@ -8,6 +8,11 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-jetbrains-mono);
+  --font-bold: var(--font-bebas-neue);
+  --animate-landing: landing 1s ease-out;
+  --animate-landing-delayed: landing 1.5s ease-out;
+  --animate-landing-nav: landing 2s ease-out;
+  --animate-landing-nav-delayed: landing 2.5s ease-out;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -264,4 +269,16 @@ pre code {
 
 .prose-custom dd {
   @apply ml-6 mt-1;
+}
+
+/* Landing page animations */
+@keyframes landing {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

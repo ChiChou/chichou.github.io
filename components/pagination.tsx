@@ -4,16 +4,20 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
+  basePath?: string;
 }
 
-export function Pagination({ currentPage, totalPages }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, basePath = "" }: PaginationProps) {
   if (totalPages <= 1) return null;
+
+  const prevHref = currentPage === 2 ? `${basePath}/` : `${basePath}/page/${currentPage - 1}`;
+  const nextHref = `${basePath}/page/${currentPage + 1}`;
 
   return (
     <nav className="flex items-center justify-center gap-4 mt-12">
       {currentPage > 1 ? (
         <Link
-          href={currentPage === 2 ? "/" : `/page/${currentPage - 1}`}
+          href={prevHref}
           className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
         >
           <ChevronLeft size={20} />
@@ -32,7 +36,7 @@ export function Pagination({ currentPage, totalPages }: PaginationProps) {
 
       {currentPage < totalPages ? (
         <Link
-          href={`/page/${currentPage + 1}`}
+          href={nextHref}
           className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
         >
           <span>Next</span>

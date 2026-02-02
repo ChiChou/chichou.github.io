@@ -1,6 +1,5 @@
 import { getAllTalks, type Talk } from "@/lib/talks";
 import { FileText, Video, Calendar, FileCode, Sparkles } from "lucide-react";
-import Image from "next/image";
 
 function TalkCard({ talk }: { talk: Talk }) {
   const linkIcons: Record<keyof typeof talk.links, React.ReactNode> = {
@@ -27,11 +26,10 @@ function TalkCard({ talk }: { talk: Talk }) {
           <picture>
             <source srcSet={`${talk.cover}.avif`} type="image/avif" />
             <source srcSet={`${talk.cover}.webp`} type="image/webp" />
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src={`${talk.cover}.jpg`}
               alt={talk.title}
-              width={800}
-              height={450}
               className="w-full h-full object-cover"
             />
           </picture>
