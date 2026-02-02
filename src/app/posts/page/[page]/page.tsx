@@ -5,14 +5,6 @@ import Image from "next/image";
 
 import { all } from "@/app/lib/posts";
 import { Header } from "@/components/header";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { addBasePath, getOptimizedImageSources } from "@/app/lib/env";
 import { Footer } from "@/components/footer";
 
@@ -59,103 +51,101 @@ export default async function Page({ params }: Params) {
   const paginatedPosts = posts.slice(start, end);
 
   return (
-    <div className="font-sans min-h-screen flex flex-col">
+    <div className="font-sans min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
       <Header />
 
-      <main className="flex-1">
-        <div className="container mx-auto">
-          <Breadcrumb className="m-6">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink asChild>
-                  <Link href="/">Home</Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Posts Page {page}</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
-
-        <div className="container mx-auto px-4">
-          <ul className="grid 2xl:grid-cols-3 md:grid-cols-2 gap-10 list-none p-0">
+      <main className="flex-1 py-8 md:py-12">
+        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+          <ul className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8">
             {paginatedPosts.map((post) => (
               <li key={post.slug}>
                 <Link
                   href={`/${post.y}/${post.m}/${post.d}/${post.slug}`}
-                  className="block hover:underline"
+                  className="group block h-full bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-sm hover:shadow-lg dark:shadow-gray-900/50 transition-all duration-300"
                 >
-                  {(() => {
-                    if (process.env.NODE_ENV === "development") {
+                  <div className="relative overflow-hidden">
+                    {(() => {
+                      if (process.env.NODE_ENV === "development") {
+                        return (
+                          <Image
+                            src={addBasePath(post.data.image)}
+                            alt={post.data.title}
+                            width={600}
+                            height={400}
+                            className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        );
+                      }
+                      const optimized = getOptimizedImageSources(
+                        post.data.image
+                      );
+                      if (optimized) {
+                        return (
+                          <picture>
+                            <source
+                              srcSet={optimized.avif}
+                              type="image/avif"
+                            />
+                            <source
+                              srcSet={optimized.webp}
+                              type="image/webp"
+                            />
+                            <img
+                              src={optimized.original}
+                              alt={post.data.title}
+                              className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
+                              loading="lazy"
+                            />
+                          </picture>
+                        );
+                      }
                       return (
-                        <Image
+                        <img
                           src={addBasePath(post.data.image)}
                           alt={post.data.title}
-                          width={600}
-                          height={400}
-                          className="w-full aspect-video object-cover rounded-lg"
+                          className="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105"
+                          loading="lazy"
                         />
                       );
-                    }
-                    const optimized = getOptimizedImageSources(post.data.image);
-                    if (optimized) {
-                      return (
-                        <picture>
-                          <source srcSet={optimized.avif} type="image/avif" />
-                          <source srcSet={optimized.webp} type="image/webp" />
-                          <img
-                            src={optimized.original}
-                            alt={post.data.title}
-                            className="w-full aspect-video object-cover rounded-lg"
-                            loading="lazy"
-                          />
-                        </picture>
-                      );
-                    }
-                    return (
-                      <img
-                        src={addBasePath(post.data.image)}
-                        alt={post.data.title}
-                        className="w-full aspect-video object-cover rounded-lg"
-                        loading="lazy"
-                      />
-                    );
-                  })()}
-                  <h2 className="text-2xl font-medium line-clamp-2 my-6">
-                    {post.data.title}
-                  </h2>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 line-clamp-3">
-                    {post.data.desc}
-                  </p>
-                  <p className="text-xs text-gray-400 dark:text-gray-500 mt-2">
-                    {`${post.y}-${post.m}-${post.d}`}
-                  </p>
+                    })()}
+                  </div>
+                  <div className="p-5">
+                    <time className="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wide">
+                      {`${post.y}-${post.m}-${post.d}`}
+                    </time>
+                    <h2 className="mt-2 text-lg font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 line-clamp-2 leading-relaxed">
+                      {post.data.desc}
+                    </p>
+                  </div>
                 </Link>
               </li>
             ))}
           </ul>
-        </div>
 
-        <nav className="container mx-auto my-20">
-          <ol className="flex justify-center gap-4">
-            {Array.from({ length: max }, (_, i) => (
-              <li key={i + 1}>
-                <Link
-                  href={`/posts/page/${i + 1}`}
-                  className={`px-4 py-2 rounded transition-colors dark:text-gray-50 text-gray-400 ${
-                    i + 1 === page
-                      ? "dark:bg-gray-900 bg-gray-50"
-                      : "dark:bg-gray-700 bg-gray-100"
-                  } dark:hover:bg-gray-600 hover:bg-gray-200`}
-                >
-                  {i + 1}
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </nav>
+          {max > 1 && (
+            <nav className="mt-12 flex justify-center">
+              <ol className="inline-flex items-center gap-1 rounded-lg bg-white dark:bg-gray-900 p-1 shadow-sm">
+                {Array.from({ length: max }, (_, i) => (
+                  <li key={i + 1}>
+                    <Link
+                      href={`/posts/page/${i + 1}`}
+                      className={`inline-flex h-9 min-w-9 items-center justify-center rounded-md px-3 text-sm font-medium transition-colors ${
+                        i + 1 === page
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+                      }`}
+                    >
+                      {i + 1}
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          )}
+        </div>
       </main>
 
       <Footer />

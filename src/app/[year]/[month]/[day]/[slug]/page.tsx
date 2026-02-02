@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import Image from "next/image";
 
 import { all, get } from "@/app/lib/posts";
@@ -11,13 +10,6 @@ import markdownStyles from "@/app/markdown.module.css";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { MarkdownEnhancements } from "@/components/markdown-enhancements";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { addBasePath, getOptimizedImageSources } from "@/app/lib/env";
 
 type Params = {
@@ -113,33 +105,6 @@ export default async function Post({ params }: Params) {
       <div className="relative h-64 sm:h-80 md:h-96 overflow-hidden">
         {renderHeroImage()}
         <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute top-0 left-0 right-0 pt-4 z-10">
-          <div className="container mx-auto px-4 md:px-8">
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link href="/" className="text-gray-300 hover:text-white">
-                      Home
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="text-gray-400" />
-                <BreadcrumbItem>
-                  <BreadcrumbLink asChild>
-                    <Link
-                      href="/posts/page/1"
-                      className="text-gray-300 hover:text-white"
-                    >
-                      Posts
-                    </Link>
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="text-gray-400" />
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </div>
         <div className="absolute inset-0 flex flex-col justify-center">
           <div className="container mx-auto px-4 md:px-8 md:text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3 drop-shadow-lg">
