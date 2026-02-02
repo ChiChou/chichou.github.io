@@ -33,11 +33,13 @@ export default async function PaginatedPage({ params }: PageProps) {
   }
 
   return (
-    <main className="max-w-2xl mx-auto px-4 pb-16">
-      <div className="space-y-8">
-        {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
-        ))}
+    <main className="max-w-2xl lg:max-w-5xl mx-auto px-4 pb-16 min-h-[calc(100vh-80px)] flex flex-col">
+      <div className="flex-1">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {posts.map((post) => (
+            <PostCard key={post.slug} post={post} />
+          ))}
+        </div>
       </div>
       <Pagination currentPage={pageNum} totalPages={totalPages} />
     </main>
