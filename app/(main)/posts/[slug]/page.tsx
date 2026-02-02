@@ -20,7 +20,6 @@ import {
   getPostBySlug,
   getPublishedPostSlugs,
 } from "@/lib/posts";
-import { extractToc } from "@/lib/toc";
 
 interface PostPageProps {
   params: Promise<{ slug: string }>;
@@ -283,7 +282,6 @@ export default async function PostPage({ params }: PostPageProps) {
     notFound();
   }
 
-  const toc = extractToc(post.content);
   const date = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
@@ -327,9 +325,8 @@ export default async function PostPage({ params }: PostPageProps) {
         </header>
       )}
 
-      <main className="max-w-5xl mx-auto px-4 pb-16">
-        <div className="lg:grid lg:grid-cols-[1fr_200px] lg:gap-12">
-          <article className="max-w-2xl">
+      <main className="max-w-2xl mx-auto px-4 pb-16">
+        <article>
             <div className="prose-custom pt-8">
               <MDXContent components={mdxComponents} />
             </div>
@@ -393,34 +390,7 @@ export default async function PostPage({ params }: PostPageProps) {
                 </div>
               </nav>
             )}
-          </article>
-
-          {/* Table of Contents */}
-          {toc.length > 0 && (
-            <aside className="hidden lg:block pt-8">
-              <nav className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-auto">
-                <h2 className="text-sm font-medium text-muted-foreground mb-4">
-                  On this page
-                </h2>
-                <ul className="space-y-2 text-sm">
-                  {toc.map((item) => (
-                    <li
-                      key={item.id}
-                      style={{ paddingLeft: `${(item.level - 2) * 12}px` }}
-                    >
-                      <a
-                        href={`#${item.id}`}
-                        className="block py-1 text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        {item.text}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </aside>
-          )}
-        </div>
+        </article>
       </main>
     </>
   );
