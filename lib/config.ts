@@ -2,17 +2,19 @@ export const config = {
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || "",
 };
 
+function isRemote(url: string) {
+  return (
+    url.startsWith("http://") ||
+    url.startsWith("https://") ||
+    url.startsWith("data:")
+  );
+}
+
 export function resolveImageUrl(src: string): string {
   if (!src) return "";
 
   // Already absolute URL (http/https/data)
-  if (
-    src.startsWith("http://") ||
-    src.startsWith("https://") ||
-    src.startsWith("data:")
-  ) {
-    return src;
-  }
+  if (isRemote(src)) return src;
 
   // Ensure path starts with /
   const normalizedPath = src.startsWith("/") ? src : `/${src}`;
@@ -33,13 +35,7 @@ export function getOptimizedSources(
   if (!src) return null;
 
   // Skip external URLs
-  if (
-    src.startsWith("http://") ||
-    src.startsWith("https://") ||
-    src.startsWith("data:")
-  ) {
-    return null;
-  }
+  if (isRemote(src)) return null;
 
   const ext = src.substring(src.lastIndexOf(".")).toLowerCase();
   if (!OPTIMIZED_EXTENSIONS.includes(ext)) {
@@ -48,14 +44,9 @@ export function getOptimizedSources(
 
   const basePath = src.substring(0, src.lastIndexOf("."));
 
-  // Transform paths: /img/ -> /image/, /talks/covers/ -> /talks/image/
-  const transformedPath = basePath
-    .replace(/^\/?img\//, "/image/")
-    .replace(/^\/?talks\/covers\//, "/talks/image/");
-
   return {
-    avif: resolveImageUrl(`${transformedPath}.avif`),
-    webp: resolveImageUrl(`${transformedPath}.webp`),
-    fallback: resolveImageUrl(`${transformedPath}.jpg`),
+    avif: resolveImageUrl(`${basePath}.avif`),
+    webp: resolveImageUrl(`${basePath}.webp`),
+    fallback: resolveImageUrl(`${basePath}.${ext.substring(1)}`),
   };
 }

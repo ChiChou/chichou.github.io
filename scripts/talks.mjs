@@ -3,7 +3,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 const SRC_DIR = path.join(process.cwd(), "_talks", "covers");
-const OUT_DIR = path.join(process.cwd(), "out", "talks", "image");
+const OUT_DIR = path.join(process.cwd(), "out", "talks", "covers");
 
 async function optimize() {
   // Ensure output directory exists

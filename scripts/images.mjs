@@ -6,7 +6,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 const POSTS_IMG_DIR = path.join(process.cwd(), "_posts", "img");
-const OUTPUT_DIR = path.join(process.cwd(), "out", "image");
+const OUTPUT_DIR = path.join(process.cwd(), "out", "img");
 const OUTPUT_FORMATS = ["avif", "webp", "jpg"];
 
 async function findImages(dir) {

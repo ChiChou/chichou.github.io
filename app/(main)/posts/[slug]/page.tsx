@@ -182,7 +182,16 @@ function rehypeImageUrls() {
           (child.tagName === "img" || child.tagName === "picture")
         ) {
           if (parent && typeof index === "number") {
-            (parent.children as Element[])[index] = child;
+            const wrapper: Element = {
+              type: "element",
+              tagName: "div",
+              properties: {
+                className: "my-8 -mx-4 md:-mx-16 lg:-mx-24",
+              },
+              children: [child],
+            };
+            (parent.children as Element[])[index] = wrapper;
+            child.properties.className = "w-full h-full";
           }
         }
       }
@@ -327,69 +336,69 @@ export default async function PostPage({ params }: PostPageProps) {
 
       <main className="max-w-2xl mx-auto px-4 pb-16">
         <article>
-            <div className="prose-custom pt-8">
-              <MDXContent components={mdxComponents} />
-            </div>
+          <div className="prose-custom pt-8">
+            <MDXContent components={mdxComponents} />
+          </div>
 
-            {/* Prev/Next Navigation */}
-            {(prev || next) && (
-              <nav className="mt-16 pt-8 border-t border-muted">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {prev ? (
-                    <Link
-                      href={`/posts/${prev.slug}/`}
-                      className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
-                    >
-                      {prev.image && (
-                        <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                          <OptimizedImage
-                            src={prev.image}
-                            alt={prev.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <span className="text-xs text-muted-foreground">
-                          Previous
-                        </span>
-                        <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
-                          {prev.title}
-                        </h3>
+          {/* Prev/Next Navigation */}
+          {(prev || next) && (
+            <nav className="mt-16 pt-8 border-t border-muted">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {prev ? (
+                  <Link
+                    href={`/posts/${prev.slug}/`}
+                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    {prev.image && (
+                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
+                        <OptimizedImage
+                          src={prev.image}
+                          alt={prev.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    </Link>
-                  ) : (
-                    <div />
-                  )}
-                  {next ? (
-                    <Link
-                      href={`/posts/${next.slug}/`}
-                      className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
-                    >
-                      {next.image && (
-                        <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
-                          <OptimizedImage
-                            src={next.image}
-                            alt={next.title}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      )}
-                      <div className="flex-1 min-w-0">
-                        <span className="text-xs text-muted-foreground">
-                          Next
-                        </span>
-                        <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
-                          {next.title}
-                        </h3>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-muted-foreground">
+                        Previous
+                      </span>
+                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                        {prev.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+                {next ? (
+                  <Link
+                    href={`/posts/${next.slug}/`}
+                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
+                  >
+                    {next.image && (
+                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
+                        <OptimizedImage
+                          src={next.image}
+                          alt={next.title}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                    </Link>
-                  ) : (
-                    <div />
-                  )}
-                </div>
-              </nav>
-            )}
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-muted-foreground">
+                        Next
+                      </span>
+                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                        {next.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+              </div>
+            </nav>
+          )}
         </article>
       </main>
     </>
