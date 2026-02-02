@@ -71,3 +71,23 @@ export function getPaginatedPosts(
   const posts = allPosts.slice(start, start + perPage);
   return { posts, totalPages };
 }
+
+export function getAdjacentPosts(slug: string): {
+  prev: PostMeta | null;
+  next: PostMeta | null;
+} {
+  const allPosts = getAllPosts();
+  const currentIndex = allPosts.findIndex((post) => post.slug === slug);
+
+  if (currentIndex === -1) {
+    return { prev: null, next: null };
+  }
+
+  // Posts are sorted by date descending, so:
+  // - prev (older) is at currentIndex + 1
+  // - next (newer) is at currentIndex - 1
+  const prev = currentIndex < allPosts.length - 1 ? allPosts[currentIndex + 1] : null;
+  const next = currentIndex > 0 ? allPosts[currentIndex - 1] : null;
+
+  return { prev, next };
+}

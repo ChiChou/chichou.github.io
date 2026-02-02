@@ -2,6 +2,7 @@ import type { Element, Root, Text } from "hast";
 
 import { compile, run } from "@mdx-js/mdx";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import * as runtime from "react/jsx-runtime";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -14,7 +15,7 @@ import { visit } from "unist-util-visit";
 import { mdxComponents } from "@/components/mdx-components";
 import { TableOfContents } from "@/components/toc";
 import { resolveImageUrl } from "@/lib/config";
-import { getPostBySlug, getPublishedPostSlugs } from "@/lib/posts";
+import { getAdjacentPosts, getPostBySlug, getPublishedPostSlugs } from "@/lib/posts";
 import { extractToc } from "@/lib/toc";
 
 interface PostPageProps {
@@ -166,6 +167,7 @@ export default async function PostPage({ params }: PostPageProps) {
     month: "long",
     day: "numeric",
   });
+  const { prev, next } = getAdjacentPosts(slug);
 
   const MDXContent = await compileMDX(post.content);
 
@@ -194,6 +196,64 @@ export default async function PostPage({ params }: PostPageProps) {
           <div className="prose-custom">
             <MDXContent components={mdxComponents} />
           </div>
+
+          {/* Prev/Next Navigation */}
+          {(prev || next) && (
+            <nav className="mt-16 pt-8 border-t border-muted">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {prev ? (
+                  <Link
+                    href={`/posts/${prev.slug}/`}
+                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    {prev.image && (
+                      <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={resolveImageUrl(prev.image)}
+                          alt={prev.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-muted-foreground">Previous</span>
+                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                        {prev.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+                {next ? (
+                  <Link
+                    href={`/posts/${next.slug}/`}
+                    className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
+                  >
+                    {next.image && (
+                      <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={resolveImageUrl(next.image)}
+                          alt={next.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-xs text-muted-foreground">Next</span>
+                      <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                        {next.title}
+                      </h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div />
+                )}
+              </div>
+            </nav>
+          )}
         </article>
 
         <aside className="hidden xl:block">
