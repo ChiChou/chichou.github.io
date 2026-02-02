@@ -245,7 +245,7 @@ export default async function PostPage({ params }: PostPageProps) {
     <>
       {/* Hero Section */}
       {post.image && (
-        <div className="relative w-full h-[50vh] min-h-100 -mt-6">
+        <div className="relative w-full h-[50vh] min-h-100">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={imageSrc}
