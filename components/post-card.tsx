@@ -17,14 +17,41 @@ export function PostCard({ post }: PostCardProps) {
 
   return (
     <Link href={`/posts/${post.slug}`} className="group block">
-      <article className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+      {/* Mobile: overlay layout */}
+      <article className="sm:hidden relative aspect-video overflow-hidden">
         {post.image && (
-          <div className="sm:w-48 sm:flex-shrink-0">
+          <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={imageSrc}
               alt={post.title}
-              className="w-full h-32 sm:h-28 object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          </>
+        )}
+        <div className="relative z-10 h-full flex flex-col justify-end p-4 text-white">
+          <time className="text-sm opacity-80">{date}</time>
+          <h2 className="mt-1 text-lg font-medium line-clamp-2">
+            {post.title}
+          </h2>
+          {post.desc && (
+            <p className="mt-1 text-sm opacity-80 line-clamp-2">
+              {post.desc}
+            </p>
+          )}
+        </div>
+      </article>
+
+      {/* Desktop: side by side layout */}
+      <article className="hidden sm:flex sm:flex-row gap-6">
+        {post.image && (
+          <div className="sm:w-48 sm:flex-shrink-0 aspect-video">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageSrc}
+              alt={post.title}
+              className="w-full h-full object-cover"
             />
           </div>
         )}
