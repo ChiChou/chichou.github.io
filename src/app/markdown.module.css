@@ -1,25 +1,33 @@
 @reference "tailwindcss";
 
 .markdown {
-    @apply text-lg leading-relaxed;
+  @apply text-lg leading-relaxed;
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-        @apply font-extralight;
-    }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-extralight;
+  }
 
-    pre {
-        @apply font-mono text-sm;
-        color: var(--hljs-text);
-        background-color: var(--hljs-background);
-    }
+  code {
+    @apply font-mono font-light;
+    @apply before:content-[''] after:content-[''];
+  }
 
-    code {
-        @apply font-mono font-light after:content-[''] before:content-[''];
-        color: --var(--color-red);
-    }
+  pre {
+    @apply font-mono text-sm;
+    @apply px-4 py-4 md:px-8;
+    @apply m-0;
+    color: var(--hljs-text);
+    background-color: var(--hljs-background);
+  }
+
+  iframe {
+    @apply -mx-4 md:-mx-8;
+    @apply w-[calc(100%+2rem)] md:w-[calc(100%+4rem)];
+    @apply max-w-none;
+  }
 }
