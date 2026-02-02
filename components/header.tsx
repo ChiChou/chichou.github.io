@@ -4,7 +4,7 @@ import { ThemeToggle } from "./theme-toggle";
 export function Header() {
   return (
     <header className="py-6">
-      <div className="max-w-2xl mx-auto px-4 flex items-center justify-between">
+      <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 flex items-center justify-between">
         <Link href="/" className="text-xl font-semibold">
           CodeColorist
         </Link>

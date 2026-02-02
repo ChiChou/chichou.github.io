@@ -42,15 +42,15 @@ function TalkCard({ talk }: { talk: Talk }) {
 
       {/* Content */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="flex items-center gap-2 text-xs 2xl:text-sm text-muted-foreground">
           <span className="font-medium">{talk.conference}</span>
           <span className="opacity-50">/</span>
           <span>{talk.year}</span>
         </div>
 
-        <h2 className="font-medium leading-snug">{talk.title}</h2>
+        <h2 className="font-medium 2xl:text-lg leading-snug">{talk.title}</h2>
 
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm 2xl:text-base text-muted-foreground">
           {talk.speakers.join(", ")}
         </p>
 
@@ -64,7 +64,7 @@ function TalkCard({ talk }: { talk: Talk }) {
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="inline-flex items-center gap-1 text-xs 2xl:text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   {linkIcons[key]}
                   <span>{linkLabels[key]}</span>
@@ -81,15 +81,15 @@ export default async function TalksPage() {
   const talks = await getAllTalks();
 
   return (
-    <main className="max-w-4xl mx-auto px-4 pb-16 min-h-[calc(100vh-80px)]">
-      <header className="py-8">
-        <h1 className="text-3xl font-bold tracking-tight">Talks</h1>
-        <p className="text-muted-foreground mt-2">
+    <main className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 pb-16 min-h-[calc(100vh-80px)]">
+      <header className="py-8 2xl:py-12">
+        <h1 className="text-3xl 2xl:text-4xl font-bold tracking-tight">Talks</h1>
+        <p className="text-muted-foreground mt-2 2xl:text-lg">
           Conference presentations and research talks
         </p>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 2xl:gap-x-12 2xl:gap-y-16">
         {talks.map((talk) => (
           <TalkCard key={talk.slug} talk={talk} />
         ))}
