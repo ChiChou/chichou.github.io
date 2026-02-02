@@ -15,7 +15,11 @@ import { visit } from "unist-util-visit";
 import { mdxComponents } from "@/components/mdx-components";
 import { TableOfContents } from "@/components/toc";
 import { resolveImageUrl } from "@/lib/config";
-import { getAdjacentPosts, getPostBySlug, getPublishedPostSlugs } from "@/lib/posts";
+import {
+  getAdjacentPosts,
+  getPostBySlug,
+  getPublishedPostSlugs,
+} from "@/lib/posts";
 import { extractToc } from "@/lib/toc";
 
 interface PostPageProps {
@@ -116,10 +120,76 @@ function rehypeShiki() {
 
 function rehypeImageUrls() {
   return (tree: Root) => {
-    visit(tree, "element", (node: Element) => {
+    visit(tree, "element", (node: Element, index, parent) => {
       if (node.tagName === "img" && node.properties?.src) {
         const src = node.properties.src as string;
         node.properties.src = resolveImageUrl(src);
+      }
+
+      // Unwrap standalone images from <p> tags so ZoomableImage can apply negative margins
+      if (node.tagName === "p" && node.children.length === 1) {
+        const child = node.children[0] as Element;
+        if (child.type === "element" && child.tagName === "img") {
+          if (parent && typeof index === "number") {
+            (parent.children as Element[])[index] = child;
+          }
+        }
+      }
+    });
+  };
+}
+
+function rehypeYouTubeEmbed() {
+  return (tree: Root) => {
+    visit(tree, "element", (node: Element, index, parent) => {
+      // Find <p> tags that contain only a YouTube embed link
+      if (node.tagName === "p" && node.children.length === 1) {
+        const child = node.children[0] as Element;
+        if (
+          child.type === "element" &&
+          child.tagName === "a" &&
+          child.properties?.href &&
+          typeof child.properties.href === "string" &&
+          child.properties.href.startsWith("https://www.youtube.com/embed/")
+        ) {
+          const src = child.properties.href;
+
+          // Replace the <p> with a wrapper div containing iframe
+          const embedNode: Element = {
+            type: "element",
+            tagName: "div",
+            properties: {
+              className: "my-8 -mx-4 md:-mx-16 lg:-mx-24",
+            },
+            children: [
+              {
+                type: "element",
+                tagName: "div",
+                properties: {
+                  className: "aspect-video",
+                },
+                children: [
+                  {
+                    type: "element",
+                    tagName: "iframe",
+                    properties: {
+                      src,
+                      className: "w-full h-full",
+                      allow:
+                        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture",
+                      allowFullScreen: true,
+                    },
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          };
+
+          if (parent && typeof index === "number") {
+            (parent.children as Element[])[index] = embedNode;
+          }
+        }
       }
     });
   };
@@ -136,6 +206,7 @@ async function compileMDX(source: string) {
       rehypeAutolinkHeadings,
       rehypeShiki,
       rehypeImageUrls,
+      rehypeYouTubeEmbed,
     ],
   });
 
@@ -178,11 +249,7 @@ export default async function PostPage({ params }: PostPageProps) {
           {post.image && (
             <div className="-mx-4 md:-mx-16 lg:-mx-24 mb-8">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageSrc}
-                alt={post.title}
-                className="w-full h-auto"
-              />
+              <img src={imageSrc} alt={post.title} className="w-full h-auto" />
             </div>
           )}
 
@@ -207,7 +274,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
                   >
                     {prev.image && (
-                      <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded">
+                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={resolveImageUrl(prev.image)}
@@ -217,7 +284,9 @@ export default async function PostPage({ params }: PostPageProps) {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs text-muted-foreground">Previous</span>
+                      <span className="text-xs text-muted-foreground">
+                        Previous
+                      </span>
                       <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
                         {prev.title}
                       </h3>
@@ -232,7 +301,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
                   >
                     {next.image && (
-                      <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded">
+                      <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={resolveImageUrl(next.image)}
@@ -242,7 +311,9 @@ export default async function PostPage({ params }: PostPageProps) {
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <span className="text-xs text-muted-foreground">Next</span>
+                      <span className="text-xs text-muted-foreground">
+                        Next
+                      </span>
                       <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
                         {next.title}
                       </h3>
