@@ -56,6 +56,13 @@ function rewrite(
   if (node.tagName === "img" && node.properties && parent && typeof index === "number") {
     const { src, alt } = node.properties as { src?: string; alt?: string };
     if (src && !src.startsWith("http")) {
+      // In development, just use original images with base path
+      if (process.env.NODE_ENV === "development") {
+        node.properties.src = addBasePath(src);
+        node.properties.loading = "lazy";
+        return;
+      }
+
       const optimized = getOptimizedSources(src);
 
       if (optimized) {
