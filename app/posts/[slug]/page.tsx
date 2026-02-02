@@ -10,10 +10,10 @@ import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import remarkGfm from "remark-gfm";
 import { createHighlighter } from "shiki";
-import { visit } from "unist-util-visit";
+import { SKIP, visit } from "unist-util-visit";
 
 import { mdxComponents } from "@/components/mdx-components";
-import { resolveImageUrl } from "@/lib/config";
+import { getOptimizedSources, resolveImageUrl } from "@/lib/config";
 import {
   getAdjacentPosts,
   getPostBySlug,
@@ -122,13 +122,62 @@ function rehypeImageUrls() {
     visit(tree, "element", (node: Element, index, parent) => {
       if (node.tagName === "img" && node.properties?.src) {
         const src = node.properties.src as string;
-        node.properties.src = resolveImageUrl(src);
+        const alt = (node.properties.alt as string) || "";
+
+        // Try to use optimized images with <picture>
+        const optimized = getOptimizedSources(src);
+
+        if (optimized && parent && typeof index === "number") {
+          // Transform the img node into a picture node in-place
+          const imgChild: Element = {
+            type: "element",
+            tagName: "img",
+            properties: {
+              src: resolveImageUrl(src),
+              alt,
+              loading: "lazy",
+            },
+            children: [],
+          };
+
+          // Mutate the current node to become a picture element
+          node.tagName = "picture";
+          node.properties = {};
+          node.children = [
+            {
+              type: "element",
+              tagName: "source",
+              properties: {
+                srcSet: optimized.avif,
+                type: "image/avif",
+              },
+              children: [],
+            },
+            {
+              type: "element",
+              tagName: "source",
+              properties: {
+                srcSet: optimized.webp,
+                type: "image/webp",
+              },
+              children: [],
+            },
+            imgChild,
+          ];
+
+          // Skip visiting children to prevent infinite recursion
+          return SKIP;
+        } else {
+          // Non-optimizable format, just resolve the URL
+          node.properties.src = resolveImageUrl(src);
+          node.properties.loading = "lazy";
+        }
       }
 
-      // Unwrap standalone images from <p> tags so ZoomableImage can apply negative margins
+      // Unwrap standalone images/pictures from <p> tags
       if (node.tagName === "p" && node.children.length === 1) {
         const child = node.children[0] as Element;
-        if (child.type === "element" && child.tagName === "img") {
+        if (child.type === "element" && (child.tagName === "img" || child.tagName === "picture")) {
           if (parent && typeof index === "number") {
             (parent.children as Element[])[index] = child;
           }
