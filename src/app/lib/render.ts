@@ -10,6 +10,22 @@ import { addBasePath } from "./env";
 
 import type { Root, Element, RootContent } from "hast";
 
+const OPTIMIZED_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+
+function getOptimizedSources(src: string): { avif: string; webp: string } | null {
+  const ext = src.substring(src.lastIndexOf(".")).toLowerCase();
+  if (!OPTIMIZED_EXTENSIONS.includes(ext)) {
+    return null;
+  }
+
+  // Optimized images are in /image/ not /img/
+  const basePath = src.substring(0, src.lastIndexOf(".")).replace(/^img\//, "image/");
+  return {
+    avif: `${basePath}.avif`,
+    webp: `${basePath}.webp`,
+  };
+}
+
 function rewrite(
   node: Root | RootContent,
   index?: number,
@@ -37,10 +53,55 @@ function rewrite(
     }
   }
 
-  if (node.tagName === "img" && node.properties) {
-    const { src } = node.properties as { src?: string };
+  if (node.tagName === "img" && node.properties && parent && typeof index === "number") {
+    const { src, alt } = node.properties as { src?: string; alt?: string };
     if (src && !src.startsWith("http")) {
-      node.properties.src = addBasePath(src);
+      const optimized = getOptimizedSources(src);
+
+      if (optimized) {
+        // Replace img with picture element
+        const pictureElement: Element = {
+          type: "element",
+          tagName: "picture",
+          properties: {},
+          children: [
+            {
+              type: "element",
+              tagName: "source",
+              properties: {
+                srcSet: addBasePath(optimized.avif),
+                type: "image/avif",
+              },
+              children: [],
+            },
+            {
+              type: "element",
+              tagName: "source",
+              properties: {
+                srcSet: addBasePath(optimized.webp),
+                type: "image/webp",
+              },
+              children: [],
+            },
+            {
+              type: "element",
+              tagName: "img",
+              properties: {
+                src: addBasePath(src),
+                alt: alt || "",
+                loading: "lazy",
+              },
+              children: [],
+            },
+          ],
+        };
+
+        // Replace the img node with picture element in parent
+        parent.children[index] = pictureElement;
+      } else {
+        // Non-optimizable format, just add base path
+        node.properties.src = addBasePath(src);
+      }
     }
   }
 }

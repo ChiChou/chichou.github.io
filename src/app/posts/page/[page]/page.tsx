@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 
 import { all } from "@/app/lib/posts";
 import { Header } from "@/components/header";
@@ -13,7 +12,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { addBasePath } from "@/app/lib/env";
+import { addBasePath, getOptimizedImageSources } from "@/app/lib/env";
 import { Footer } from "@/components/footer";
 
 const perPage = 9;
@@ -86,13 +85,31 @@ export default async function Page({ params }: Params) {
                 href={`/${post.y}/${post.m}/${post.d}/${post.slug}`}
                 className="block hover:underline"
               >
-                <Image
-                  src={addBasePath(post.data.image)}
-                  alt={post.data.title}
-                  width={600}
-                  height={400}
-                  className="w-full aspect-video object-cover rounded-lg"
-                />
+                {(() => {
+                  const optimized = getOptimizedImageSources(post.data.image);
+                  if (optimized) {
+                    return (
+                      <picture>
+                        <source srcSet={optimized.avif} type="image/avif" />
+                        <source srcSet={optimized.webp} type="image/webp" />
+                        <img
+                          src={optimized.original}
+                          alt={post.data.title}
+                          className="w-full aspect-video object-cover rounded-lg"
+                          loading="lazy"
+                        />
+                      </picture>
+                    );
+                  }
+                  return (
+                    <img
+                      src={addBasePath(post.data.image)}
+                      alt={post.data.title}
+                      className="w-full aspect-video object-cover rounded-lg"
+                      loading="lazy"
+                    />
+                  );
+                })()}
                 <h2 className="text-2xl font-medium line-clamp-2 my-6">
                   {post.data.title}
                 </h2>

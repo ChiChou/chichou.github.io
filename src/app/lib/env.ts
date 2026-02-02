@@ -17,3 +17,26 @@ export function addBasePath(path: string) {
   if (!prefixed.startsWith("/")) prefixed = `/${prefixed}`;
   return basePath + prefixed;
 }
+
+const OPTIMIZED_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+
+export function getOptimizedImageSources(src: string): {
+  avif: string;
+  webp: string;
+  original: string;
+} | null {
+  const ext = src.substring(src.lastIndexOf(".")).toLowerCase();
+  if (!OPTIMIZED_EXTENSIONS.includes(ext)) {
+    return null;
+  }
+
+  // Optimized images are in /image/ not /img/
+  const optimizedBase = src
+    .substring(0, src.lastIndexOf("."))
+    .replace(/^img\//, "image/");
+  return {
+    avif: addBasePath(`${optimizedBase}.avif`),
+    webp: addBasePath(`${optimizedBase}.webp`),
+    original: addBasePath(src),
+  };
+}
