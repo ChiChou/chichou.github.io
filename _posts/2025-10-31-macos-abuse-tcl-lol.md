@@ -1,6 +1,6 @@
 ---
 title:	"Abusing tclsh to Load (Remote) Shellcode on macOS"
-date:	2016-01-20
+date:	2025-10-31
 image:  img/2025-10-31-macos-abuse-tcl-lol/cover.webp
 desc:   "Yet another LOOBins"
 ---
