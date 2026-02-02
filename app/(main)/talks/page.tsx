@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { OptimizedImage } from "@/components/optimized-image";
 import { getAllTalks, type Talk } from "@/lib/talks";
 import { FileText, Video, Calendar, FileCode, Sparkles } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Talks | CodeColorist",
+};
 
 function TalkCard({ talk }: { talk: Talk }) {
   const linkIcons: Record<keyof typeof talk.links, React.ReactNode> = {
@@ -81,14 +86,7 @@ export default async function TalksPage() {
   const talks = await getAllTalks();
 
   return (
-    <main className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 pb-16 min-h-[calc(100vh-80px)]">
-      <header className="py-8 2xl:py-12">
-        <h1 className="text-3xl 2xl:text-4xl font-bold tracking-tight">Talks</h1>
-        <p className="text-muted-foreground mt-2 2xl:text-lg">
-          Conference presentations and research talks
-        </p>
-      </header>
-
+    <main className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 pb-16 min-h-[calc(100vh-80px)] flex flex-col lg:justify-center">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 2xl:gap-x-12 2xl:gap-y-16">
         {talks.map((talk) => (
           <TalkCard key={talk.slug} talk={talk} />

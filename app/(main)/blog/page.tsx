@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { getPaginatedPosts } from "@/lib/posts";
 import { PostCard } from "@/components/post-card";
 import { Pagination } from "@/components/pagination";
+
+export const metadata: Metadata = {
+  title: "Blog | CodeColorist",
+};
 
 const POSTS_PER_PAGE = 10;
 
