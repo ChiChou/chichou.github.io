@@ -23,8 +23,8 @@ to use classic `mprotect` to map shellcode.
 /usr/bin/auvaltool
 ```
 
-Python 2 was marked deperecated and finally removed from macOS preinstalled binaries. However in terms of abuse, this `tclsh` is way more interesting
-than it. In addiction to unsigned executable memory, it is also granted `com.apple.security.cs.disable-library-validation` that can load dylib
+Python 2 was marked deprecated and finally removed from macOS preinstalled binaries. However in terms of abuse, this `tclsh` is way more interesting
+than it. In addition to unsigned executable memory, it is also granted `com.apple.security.cs.disable-library-validation` that can load dylib
 without codesign enforcement.
 
 [LOOBins](https://github.com/infosecB/LOOBins) already showed an example to load payload as plugins.

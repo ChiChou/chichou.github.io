@@ -21,7 +21,7 @@ They are both from the Foundation framework, well-documented as below.
 * <https://developer.apple.com/documentation/foundation/nspredicate>
 * <https://developer.apple.com/documentation/foundation/nsexpression>
 
-Both of them accept a format string to compile to an abstract synatx tree. This is done by the function `_qfqp2_performParsing` from `Foundation.framework`.
+Both of them accept a format string to compile to an abstract syntax tree. This is done by the function `_qfqp2_performParsing` from `Foundation.framework`.
 
 Here is an example:
 
@@ -195,7 +195,7 @@ FUNCTION(FUNCTION(FUNCTION(FUNCTION(CAST('NSInvocationOperation','Class'),'alloc
     frame #3: 0x00007fff211d676b Foundation`-[NSFunctionExpression expressionValueWithObject:context:] + 721
 ```
 
-You can defeat ASLR by leveraging `-[CNFileServices dlsym::]` or `-[ABFileServices dlsym::]`. If those classes are not avaliable, use `NSBundle` to load their modules first.
+You can defeat ASLR by leveraging `-[CNFileServices dlsym::]` or `-[ABFileServices dlsym::]`. If those classes are not available, use `NSBundle` to load their modules first.
 
 ## Writing An Interpreter
 
@@ -204,7 +204,7 @@ Both `NSExpresson` and `NSPredicate` acts as an interpreter that exposes runtime
 * [react-native](https://reactnative.dev/) for hybrid app development
 * [JSPatch](https://jspatch.com/) for hot patch
 
-Dynamically loading remote script to execute native methods is considered voilating AppStore review guide.
+Dynamically loading remote script to execute native methods is considered violating AppStore review guide.
 
 > This includes any code which passes arbitrary parameters to dynamic methods such as `dlopen()`, `dlsym()`, `respondsToSelector:`, `performSelector:`, `method_exchangeImplementations()`, and running remote scripts in order to change app behavior or call SPI, based on the contents of the downloaded script. Even if the remote resource is not intentionally malicious, it could easily be hijacked via a Man In The Middle (MiTM) attack, which can pose a serious security vulnerability to users of your app.
 
@@ -233,7 +233,7 @@ Fore local variables, there is [Assignment Expression](https://developer.apple.c
 assignment_expression ::= predicate_variable ":=" expression
 ```
 
-It's only avaliable when the `context` argument of the method `-[NSExpression expressionValueWithObject:context:]` is a valid `NSMutableDictionary`, then the evaluation result writes a key-value pair back to this mutable dictionary. Just reuse the same context in a loop, we can have a script interpreter that supports variables.
+It's only available when the `context` argument of the method `-[NSExpression expressionValueWithObject:context:]` is a valid `NSMutableDictionary`, then the evaluation result writes a key-value pair back to this mutable dictionary. Just reuse the same context in a loop, we can have a script interpreter that supports variables.
 
 ```objc
 #import <Foundation/Foundation.h>

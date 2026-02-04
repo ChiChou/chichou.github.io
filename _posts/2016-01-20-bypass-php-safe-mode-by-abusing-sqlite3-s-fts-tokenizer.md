@@ -73,13 +73,13 @@ SqLite version 3.8.7.4 2014-12-09 01:34:36
 Enter ".help" for usage hints.
 Connected to a transient in-memory database.
 Use ".open FILENAME" to reopen on a persistent database.
-sqlite> select hex(fts3_tokentzer('simple'));
+sqlite> select hex(fts3_tokenizer('simple'));
 E03B7EE4F67F0000
 sqlite>
 ```
 
 ```sh
-~ grep libsquite /proc/20267/maps
+~ grep libsqlite /proc/20267/maps
 7ff6e4522000-7ff6e45e3000 r-xp 00000000 08:01 569 /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
 7ff6e45e3000-7ff6e47e2000 ---p 000c1000 08:01 569 /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6
 7ff6e47e2000-7ff6e47e5000 r--p 000c1000 08:01 569 /usr/lib/x86_64-linux-gnu/libsqlite3.so.0.8.6

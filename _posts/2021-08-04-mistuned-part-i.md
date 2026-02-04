@@ -8,7 +8,7 @@ desc:   Remotely pwn iOS and pop up arbitrary app with 0 memory corruption.
 
 Ever since Pointer Authentication Code (PAC) has been introduced, iPhone remained standing for more than two years on various pwn contests until TianfuCup 2020 (Project Zero has reported a remote zero click exploit in 2019). Ant Security and Qihoo 360 used two different bug chains respectively to successfully gained remote code execution with userspace sandbox escape on iPhone 11 with iOS 14.2.
 
-In a series of post, I am going to disclouse the bugs I used for full-chain remote code execution. Born with Generation Z, these bugs were introduced by iOS 3 and iOS 6 respectively, however they were still able to fully bypass various protections on a state-of-the-art mobile phone at the time.
+In a series of posts, I am going to disclose the bugs I used for full-chain remote code execution. Born with Generation Z, these bugs were introduced by iOS 3 and iOS 6 respectively, however they were still able to fully bypass various protections on a state-of-the-art mobile phone at the time.
 
 ## Client-side XSS from iOS 3
 
@@ -75,7 +75,7 @@ Due to the system enforcement, to use `mmap(MAP_JIT)`, the process must be sandb
 
 But everything comes with a price. In this context, the exploit has only one chance to get remote code execution, or the app dies. There is no such thing like auto recover for browser tabs. It has a high demand for reliability of the exploit. Besides, this bug redirects from MobileSafari to iTunes Store, leaving significantly observable animation in the UI, so it's not ideal for real attackers.
 
-On iOS 14, iTunes Store is not the only vector. There is a StoreKitUIService app that suffers the same flaw. The only difference is the URL Scheme is `itms-ui`, rather than `itms`. StoreKitUIService is also responsible for delievering OTA enterprise apps. It has almost no UI impact compared to the former. Unfortunately `itms-ui` is not trusted. MobileSafari warns before opening the URL. However, if the payload is delivered through iMessage, AirDrop or some 3rd-party instant messengers, it doesn't matter because such scenarios don't require extra confirmation.
+On iOS 14, iTunes Store is not the only vector. There is a StoreKitUIService app that suffers the same flaw. The only difference is the URL Scheme is `itms-ui`, rather than `itms`. StoreKitUIService is also responsible for delivering OTA enterprise apps. It has almost no UI impact compared to the former. Unfortunately `itms-ui` is not trusted. MobileSafari warns before opening the URL. However, if the payload is delivered through iMessage, AirDrop or some 3rd-party instant messengers, it doesn't matter because such scenarios don't require extra confirmation.
 
 This bug has been assigned to CVE-2021-1748.
 
@@ -125,6 +125,6 @@ app.launchWithURL_options_suspended_('calc://1337', {}, false);
 
 ## Conclusion
 
-CVE-2021-1748 is just anther fresh example of my previous BlackHat Talk [Cross-site Escape](https://i.blackhat.com/eu-20/Thursday/eu-20-Zhou-Cross-Site-Escape-Pwning-MacOS-Safari-Sandbox-The-Unusual-Way.pdf). A client side XSS disarms the sandbox and exposes a bigger attack surface by exposing extra methods to JavaScript. It doesn't even need memory corruption at this point to launch Calculator app.
+CVE-2021-1748 is just another fresh example of my previous BlackHat Talk [Cross-site Escape](https://i.blackhat.com/eu-20/Thursday/eu-20-Zhou-Cross-Site-Escape-Pwning-MacOS-Safari-Sandbox-The-Unusual-Way.pdf). A client side XSS disarms the sandbox and exposes a bigger attack surface by exposing extra methods to JavaScript. It doesn't even need memory corruption at this point to launch Calculator app.
 
 In the upcoming posts, I'll introduce a secondary UAF bug (CVE-2021-1864) to gain various memory primitives, build arbitrary invocation, and finally bypass both PAC and APRR to load arbitrary shellcode in the context of iTunes Store app.

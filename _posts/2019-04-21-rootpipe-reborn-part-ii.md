@@ -18,7 +18,7 @@ The idea and the initial PoC was borrowed from Ian Beer:
 
 * [Issue 1223: MacOS/iOS userspace entitlement checking is racy](https://bugs.chromium.org/p/project-zero/issues/detail?id=1223)
 
-Samuel Groß has also been aware of this senario:
+Samuel Groß has also been aware of this scenario:
 
 * [Don't Trust the PID! Stories of a simple logic bug and where to find it](https://saelo.github.io/presentations/warcon18_dont_trust_the_pid.pdf)
 * [Pwn2Own: Safari sandbox part 2 — Wrap your way around to root](https://phoenhex.re/2017-07-06/pwn2own-sandbox-escape#performing-the-right-check-on-the-wrong-process)

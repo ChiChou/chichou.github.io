@@ -93,7 +93,7 @@ It used to be exploitable combined with a sudo design flaw.
 
 But what I want is a root shell!
 
-The flaw resides in thetmdiagnose binary, which is not too hard to reverse. Its implementation is just some external shell commands wrapped in NSTask calls and the terminal output is honest:
+The flaw resides in the tmdiagnose binary, which is not too hard to reverse. Its implementation is just some external shell commands wrapped in NSTask calls and the terminal output is honest:
 
     2018-06-24 18:03:46.131 tmdiagnose[15529:a03] Executing `/usr/sbin/spindump -notarget 15 -file /private/var/tmp/cc@ant.tmdiagnostic/system_state_18.03.46/spindump.txt`
     2018-06-24 18:03:48.206 tmdiagnose[15529:1d03] Executing `/usr/bin/fs_usage -w -t 10 -e tmdiagnose`
@@ -117,7 +117,7 @@ There are two exploitable bugs.
 
 The executable `/usr/local/bin/ddt` does not exist on a fresh installed mac. The location is not protected by rootless, and the popular package manager [brew](https://brew.sh) explicitly set this directory to world writable. So on a macOS with brew installed (don't you?), a normal user process can overwrite this file and send a XPC message to execute it as root.
 
-Alright, this senario is not the default configuration. What about a privileged command injection?
+Alright, this scenario is not the default configuration. What about a privileged command injection?
 
 The `tmdiagnose` calls external commands via `NSTask` api, which is usually considered secure because it does not support shell operators unless you intentionally spawn a shell.
 

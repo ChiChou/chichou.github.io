@@ -15,11 +15,11 @@ C'è un RSS per controllare lo stato del rinnovo, anche se non accelera nulla.
 
 Per fortuna, il website ufficiale del Ministero dell'Interno ha un RSS per il permesso di soggiorno, che è molto utile per tenere traccia dello stato.
 
-Devi usare il password sopra la ricevuta, che è un codice numerico lungo 12 caratteri.
+Utilizzare la password indicata sulla ricevuta, che è un codice numerico di 12 caratteri.
 
-![Il esempio](img/2025-05-26-bot-per-permesso/esempio.svg)
+![Esempio](img/2025-05-26-bot-per-permesso/esempio.svg)
 
-Per esempio, se il tuo codice è `123456789012`, l'URL RSS sarà:
+Ad esempio, se il codice è `123456789012`, l'URL RSS sarà:
 
 > https://questure.poliziadistato.it/servizio/stranieri?lang=english&pratica=123456789012&invia=Submit&mime=4
 
@@ -80,4 +80,4 @@ export default {
 };
 ```
 
-Allora puoi usare questo proxy sul iOS Shortcuts per creare un bot che ti dice il stato ogni giorno.
+È possibile utilizzare questo proxy con iOS Shortcuts per creare un bot che notifica lo stato quotidianamente.

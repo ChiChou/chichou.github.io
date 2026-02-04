@@ -78,7 +78,7 @@ This primitive is never seen before and it only applies to this particular appli
 
 ## ASLR Bypass
 
-Now we immediatly bypass ASLR with the same primitive. The Objective-C runtime uses various tricks to save memory, e.g., tagged pointer, class clusters, etc. Some of the magic values does not create new object instance at all. They use shared instances instead.
+Now we immediately bypass ASLR with the same primitive. The Objective-C runtime uses various tricks to save memory, e.g., tagged pointer, class clusters, etc. Some of the magic values does not create new object instance at all. They use shared instances instead.
 
 * `__kCFNumberNaN`: `NaN`
 * `__kCFNumberPositiveInfinity`: `Infinity`
@@ -99,7 +99,7 @@ w.dealloc();
 w // dangling reference
 ```
 
-This results in an access voilation within the runtime function `objc_opt_respondsToSelector` that the runtime tries to dereference an invalid id pointer.
+This results in an access violation within the runtime function `objc_opt_respondsToSelector` that the runtime tries to dereference an invalid id pointer.
 
 ![dangling pointer](img/2021-08-05-mistuned-part-ii/uaf.svg)
 
