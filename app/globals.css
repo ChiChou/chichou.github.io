@@ -180,6 +180,7 @@ pre code {
 /* Links */
 .prose-custom a {
   @apply underline underline-offset-2 decoration-muted-foreground/50 hover:decoration-foreground transition-colors;
+  overflow-wrap: anywhere;
 }
 
 /* Paragraphs */
