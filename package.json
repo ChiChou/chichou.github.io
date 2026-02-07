@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "postbuild": "npm run covers && npm run images || true",
+    "postbuild": "bun run covers && bun run images || true",
     "start": "next start",
     "lint": "eslint",
-    "images": "node scripts/images.mjs",
-    "covers": "node scripts/talks.mjs"
+    "images": "bun scripts/images.mjs",
+    "covers": "bun scripts/talks.mjs"
   },
   "dependencies": {
     "@mdx-js/loader": "^3.1.1",
