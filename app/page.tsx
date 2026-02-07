@@ -1,5 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { resolveImageUrl } from "@/lib/config";
+import mastodonIcon from "bootstrap-icons/icons/mastodon.svg";
+import githubIcon from "bootstrap-icons/icons/github.svg";
+import linkedinIcon from "bootstrap-icons/icons/linkedin.svg";
 
 export default function Home() {
   return (
@@ -26,6 +30,17 @@ export default function Home() {
               Talks
             </Link>
           </nav>
+          <div className="mt-4 flex gap-3 animate-landing-nav-delayed">
+            <a href="https://infosec.exchange/@codecolorist" rel="me noopener noreferrer" target="_blank" aria-label="Mastodon" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image src={mastodonIcon} alt="" width={24} height={24} className="invert" />
+            </a>
+            <a href="https://github.com/chichou" rel="noopener noreferrer" target="_blank" aria-label="GitHub" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image src={githubIcon} alt="" width={24} height={24} className="invert" />
+            </a>
+            <a href="https://www.linkedin.com/in/codecolorist/" rel="noopener noreferrer" target="_blank" aria-label="LinkedIn" className="opacity-70 hover:opacity-100 transition-opacity">
+              <Image src={linkedinIcon} alt="" width={24} height={24} className="invert" />
+            </a>
+          </div>
         </div>
         <video
           controls={false}
