@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 
 import { OptimizedImage } from "@/components/optimized-image";
 import type { PostMeta } from "@/lib/posts";
@@ -16,7 +17,7 @@ export function PostCard({ post }: PostCardProps) {
 
   return (
     <Link href={`/posts/${post.slug}`} className="group block">
-      {/* Mobile: overlay layout */}
+      {/* Mobile: overlay layout — no view-transition-name to avoid duplicates with desktop */}
       <article className="sm:hidden relative aspect-video overflow-hidden">
         {post.image && (
           <>
@@ -42,19 +43,23 @@ export function PostCard({ post }: PostCardProps) {
       {/* Desktop: side by side layout */}
       <article className="hidden sm:flex sm:flex-row gap-6 2xl:gap-8">
         {post.image && (
-          <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video">
-            <OptimizedImage
-              src={post.image}
-              alt={post.title}
-              className="w-full h-full object-cover"
-            />
-          </div>
+          <ViewTransition name={`post-image-${post.slug}`}>
+            <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video">
+              <OptimizedImage
+                src={post.image}
+                alt={post.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </ViewTransition>
         )}
         <div className="flex-1 min-w-0">
           <time className="text-sm 2xl:text-base text-muted-foreground">{date}</time>
-          <h2 className="mt-1 text-lg 2xl:text-xl font-medium group-hover:text-muted-foreground transition-colors line-clamp-2">
-            {post.title}
-          </h2>
+          <ViewTransition name={`post-title-${post.slug}`}>
+            <h2 className="mt-1 text-lg 2xl:text-xl font-medium group-hover:text-muted-foreground transition-colors line-clamp-2">
+              {post.title}
+            </h2>
+          </ViewTransition>
           {post.desc && (
             <p className="mt-2 text-muted-foreground text-sm 2xl:text-base line-clamp-2">
               {post.desc}

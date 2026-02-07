@@ -4,6 +4,7 @@ import { compile, run } from "@mdx-js/mdx";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ViewTransition } from "react";
 import * as runtime from "react/jsx-runtime";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeRaw from "rehype-raw";
@@ -304,33 +305,39 @@ export default async function PostPage({ params }: PostPageProps) {
     <>
       {/* Hero Section */}
       {post.image && (
-        <div className="relative w-full aspect-video lg:aspect-auto lg:h-[40vh] lg:min-h-100">
-          <OptimizedImage
-            src={post.image}
-            alt={post.title}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
-            <div className="max-w-2xl mx-auto">
-              <div className="inline-block px-4 py-3 rounded-lg">
-                <time className="text-sm text-white/80">{date}</time>
-                <h1 className="mt-2 text-2xl md:text-4xl font-semibold tracking-tight text-white">
-                  {post.title}
-                </h1>
+        <ViewTransition name={`post-image-${slug}`}>
+          <div className="relative w-full aspect-video lg:aspect-auto lg:h-[40vh] lg:min-h-100">
+            <OptimizedImage
+              src={post.image}
+              alt={post.title}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12">
+              <div className="max-w-2xl mx-auto">
+                <div className="inline-block px-4 py-3 rounded-lg">
+                  <time className="text-sm text-white/80">{date}</time>
+                  <ViewTransition name={`post-title-${slug}`}>
+                    <h1 className="mt-2 text-2xl md:text-4xl font-semibold tracking-tight text-white">
+                      {post.title}
+                    </h1>
+                  </ViewTransition>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </ViewTransition>
       )}
 
       {/* Fallback header when no image */}
       {!post.image && (
         <header className="max-w-2xl mx-auto px-4 pt-8 pb-4">
           <time className="text-sm text-muted-foreground">{date}</time>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-            {post.title}
-          </h1>
+          <ViewTransition name={`post-title-${slug}`}>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+              {post.title}
+            </h1>
+          </ViewTransition>
         </header>
       )}
 
