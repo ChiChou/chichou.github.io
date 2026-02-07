@@ -22,6 +22,12 @@ export function Header() {
             >
               Talks
             </Link>
+            <Link
+              href="/about"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+            >
+              About
+            </Link>
           </nav>
           <ThemeToggle />
         </div>

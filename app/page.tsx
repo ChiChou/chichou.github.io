@@ -4,6 +4,7 @@ import { resolveImageUrl } from "@/lib/config";
 import mastodonIcon from "bootstrap-icons/icons/mastodon.svg";
 import githubIcon from "bootstrap-icons/icons/github.svg";
 import linkedinIcon from "bootstrap-icons/icons/linkedin.svg";
+import cameraIcon from "bootstrap-icons/icons/camera.svg";
 
 export default function Home() {
   return (
@@ -30,18 +31,74 @@ export default function Home() {
               Talks
             </Link>
           </nav>
-          <div className="mt-4 flex gap-3 animate-landing-nav-delayed">
-            <a href="https://infosec.exchange/@codecolorist" rel="me noopener noreferrer" target="_blank" aria-label="Mastodon" className="opacity-70 hover:opacity-100 transition-opacity">
-              <Image src={mastodonIcon} alt="" width={24} height={24} className="invert" />
+          <div className="mt-4 flex gap-5 animate-landing-nav-delayed">
+            <a
+              href="https://infosec.exchange/@codecolorist"
+              rel="me noopener noreferrer"
+              target="_blank"
+              title="Mastodon"
+              aria-label="Mastodon"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src={mastodonIcon}
+                alt=""
+                width={24}
+                height={24}
+                className="invert"
+              />
             </a>
-            <a href="https://github.com/chichou" rel="noopener noreferrer" target="_blank" aria-label="GitHub" className="opacity-70 hover:opacity-100 transition-opacity">
-              <Image src={githubIcon} alt="" width={24} height={24} className="invert" />
+            <a
+              href="https://github.com/chichou"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="GitHub"
+              aria-label="GitHub"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src={githubIcon}
+                alt=""
+                width={24}
+                height={24}
+                className="invert"
+              />
             </a>
-            <a href="https://www.linkedin.com/in/codecolorist/" rel="noopener noreferrer" target="_blank" aria-label="LinkedIn" className="opacity-70 hover:opacity-100 transition-opacity">
-              <Image src={linkedinIcon} alt="" width={24} height={24} className="invert" />
+            <a
+              href="https://www.linkedin.com/in/codecolorist/"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="LinkedIn"
+              aria-label="LinkedIn"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src={linkedinIcon}
+                alt=""
+                width={24}
+                height={24}
+                className="invert"
+              />
+            </a>
+            <a
+              href="https://unsplash.com/@0xcc"
+              rel="noopener noreferrer"
+              target="_blank"
+              title="Unsplash"
+              aria-label="Unsplash"
+              className="opacity-70 hover:opacity-100 transition-opacity"
+            >
+              <Image
+                src={cameraIcon}
+                alt=""
+                width={24}
+                height={24}
+                className="invert"
+              />
             </a>
           </div>
         </div>
+        <div className="absolute z-20 inset-0 bg-linear-to-t from-black/50 via-black/5 to-transparent" />
         <video
           controls={false}
           playsInline
