@@ -23,6 +23,7 @@ export function Footer() {
               width={24}
               height={24}
               className="dark:invert"
+              aria-hidden="true"
             />
           </a>
           <a
@@ -39,6 +40,7 @@ export function Footer() {
               width={24}
               height={24}
               className="dark:invert"
+              aria-hidden="true"
             />
           </a>
           <a
@@ -55,6 +57,7 @@ export function Footer() {
               width={24}
               height={24}
               className="dark:invert"
+              aria-hidden="true"
             />
           </a>
           <a
@@ -71,6 +74,7 @@ export function Footer() {
               width={24}
               height={24}
               className="dark:invert"
+              aria-hidden="true"
             />
           </a>
         </div>
