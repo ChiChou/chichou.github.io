@@ -17,21 +17,22 @@ export default function Home() {
           <p className="2xl:text-6xl xl:text-4xl max-xl:text-xl text-gray-100 animate-landing-delayed drop-shadow-md">
             Security research and wannabe photographer
           </p>
-          <nav className="mt-6 font-light text-4xl max-xl:text-2xl flex gap-4">
-            <Link
-              href="/blog"
-              className="text-gray-200 hover:text-red-300 transition-colors animate-landing-nav drop-shadow-md"
-            >
-              Blog
-            </Link>
-            <Link
-              href="/talks"
-              className="text-gray-200 hover:text-red-300 transition-colors animate-landing-nav-delayed drop-shadow-md"
-            >
-              Talks
-            </Link>
-          </nav>
-          <div className="mt-4 flex gap-5 animate-landing-nav-delayed">
+          <div className="mt-6 flex max-sm:flex-row max-sm:items-center max-sm:justify-between max-sm:gap-4 sm:flex-col sm:gap-4">
+            <nav className="font-light text-4xl max-xl:text-2xl flex gap-4">
+              <Link
+                href="/blog"
+                className="text-gray-200 hover:text-red-300 transition-colors animate-landing-nav drop-shadow-md"
+              >
+                Blog
+              </Link>
+              <Link
+                href="/talks"
+                className="text-gray-200 hover:text-red-300 transition-colors animate-landing-nav-delayed drop-shadow-md"
+              >
+                Talks
+              </Link>
+            </nav>
+            <div className="sm:mt-4 flex gap-5 animate-landing-nav-delayed">
             <a
               href="https://infosec.exchange/@codecolorist"
               rel="me noopener noreferrer"
@@ -86,7 +87,7 @@ export default function Home() {
               target="_blank"
               title="Unsplash"
               aria-label="Unsplash"
-              className="opacity-70 hover:opacity-100 transition-opacity"
+              className="opacity-70 hover:opacity-100 transition-opacity hidden min-[400px]:block"
             >
               <Image
                 src={cameraIcon}
@@ -96,6 +97,7 @@ export default function Home() {
                 className="invert"
               />
             </a>
+          </div>
           </div>
         </div>
         <div className="absolute z-20 inset-0 bg-linear-to-t from-black/50 via-black/5 to-transparent" />
