@@ -6,16 +6,16 @@ import cameraIcon from "bootstrap-icons/icons/camera.svg";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t border-border/50 py-8">
+    <footer className="mt-auto border-t border-border/40 py-8">
       <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8">
-        <div className="flex justify-center gap-6">
+        <div className="flex justify-center gap-4">
           <a
             href="https://infosec.exchange/@codecolorist"
             rel="me noopener noreferrer"
             target="_blank"
             title="Mastodon"
             aria-label="Mastodon"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <Image
               src={mastodonIcon}
@@ -32,7 +32,7 @@ export function Footer() {
             target="_blank"
             title="GitHub"
             aria-label="GitHub"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <Image
               src={githubIcon}
@@ -49,7 +49,7 @@ export function Footer() {
             target="_blank"
             title="LinkedIn"
             aria-label="LinkedIn"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <Image
               src={linkedinIcon}
@@ -66,7 +66,7 @@ export function Footer() {
             target="_blank"
             title="Unsplash"
             aria-label="Unsplash"
-            className="text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           >
             <Image
               src={cameraIcon}

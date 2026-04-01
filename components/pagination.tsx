@@ -14,40 +14,40 @@ export function Pagination({ currentPage, totalPages, basePath = "" }: Paginatio
   const nextHref = `${basePath}/page/${currentPage + 1}`;
 
   return (
-    <nav className="flex items-center justify-center gap-4 mt-12">
+    <nav className="flex items-center justify-center gap-2 mt-12">
       {currentPage > 1 ? (
         <Link
           href={prevHref}
-          className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           transitionTypes={['slide-back']}
         >
-          <ChevronLeft size={20} />
+          <ChevronLeft size={18} />
           <span>Previous</span>
         </Link>
       ) : (
-        <span className="flex items-center gap-1 text-muted-foreground/50">
-          <ChevronLeft size={20} />
+        <span className="flex items-center gap-1 px-3 py-1.5 text-muted-foreground/30">
+          <ChevronLeft size={18} />
           <span>Previous</span>
         </span>
       )}
 
-      <span className="text-muted-foreground">
+      <span className="text-sm text-muted-foreground tabular-nums px-2">
         {currentPage} / {totalPages}
       </span>
 
       {currentPage < totalPages ? (
         <Link
           href={nextHref}
-          className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
           transitionTypes={['slide-forward']}
         >
           <span>Next</span>
-          <ChevronRight size={20} />
+          <ChevronRight size={18} />
         </Link>
       ) : (
-        <span className="flex items-center gap-1 text-muted-foreground/50">
+        <span className="flex items-center gap-1 px-3 py-1.5 text-muted-foreground/30">
           <span>Next</span>
-          <ChevronRight size={20} />
+          <ChevronRight size={18} />
         </span>
       )}
     </nav>
