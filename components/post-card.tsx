@@ -18,13 +18,13 @@ export function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/posts/${post.slug}`} className="group block" transitionTypes={['slide-up']}>
       {/* Mobile: overlay layout — no view-transition-name to avoid duplicates with desktop */}
-      <article className="sm:hidden relative aspect-video overflow-hidden">
+      <article className="sm:hidden relative aspect-video overflow-hidden rounded-xl">
         {post.image && (
           <>
             <OptimizedImage
               src={post.image}
               alt={post.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/40 to-transparent" />
           </>
@@ -41,27 +41,27 @@ export function PostCard({ post }: PostCardProps) {
       </article>
 
       {/* Desktop: side by side layout */}
-      <article className="hidden sm:flex sm:flex-row gap-6 2xl:gap-8">
+      <article className="hidden sm:flex sm:flex-row gap-5 2xl:gap-6">
         {post.image && (
           <ViewTransition name={`post-image-${post.slug}`}>
-            <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video">
+            <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video rounded-lg overflow-hidden">
               <OptimizedImage
                 src={post.image}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
           </ViewTransition>
         )}
-        <div className="flex-1 min-w-0">
-          <time className="text-sm 2xl:text-base text-muted-foreground">{date}</time>
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <time className="text-xs 2xl:text-sm text-muted-foreground tracking-wide uppercase">{date}</time>
           <ViewTransition name={`post-title-${post.slug}`}>
-            <h2 className="mt-1 text-lg 2xl:text-xl font-medium group-hover:text-muted-foreground transition-colors line-clamp-2">
+            <h2 className="mt-1.5 text-lg 2xl:text-xl font-semibold group-hover:text-muted-foreground transition-colors line-clamp-2">
               {post.title}
             </h2>
           </ViewTransition>
           {post.desc && (
-            <p className="mt-2 text-muted-foreground text-sm 2xl:text-base line-clamp-2">
+            <p className="mt-2 text-muted-foreground text-sm 2xl:text-base line-clamp-2 leading-relaxed">
               {post.desc}
             </p>
           )}
