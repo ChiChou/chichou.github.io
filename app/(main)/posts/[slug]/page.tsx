@@ -355,6 +355,7 @@ export default async function PostPage({ params }: PostPageProps) {
                   <Link
                     href={`/posts/${prev.slug}/`}
                     className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors"
+                    transitionTypes={['slide-back']}
                   >
                     {prev.image && (
                       <div className="w-20 h-20 shrink-0 overflow-hidden rounded">
@@ -381,6 +382,7 @@ export default async function PostPage({ params }: PostPageProps) {
                   <Link
                     href={`/posts/${next.slug}/`}
                     className="group flex gap-4 p-4 -m-4 rounded-lg hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
+                    transitionTypes={['slide-forward']}
                   >
                     {next.image && (
                       <div className="w-20 h-20 shrink-0 overflow-hidden rounded">

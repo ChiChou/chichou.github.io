@@ -19,6 +19,7 @@ export function Pagination({ currentPage, totalPages, basePath = "" }: Paginatio
         <Link
           href={prevHref}
           className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+          transitionTypes={['slide-back']}
         >
           <ChevronLeft size={20} />
           <span>Previous</span>
@@ -38,6 +39,7 @@ export function Pagination({ currentPage, totalPages, basePath = "" }: Paginatio
         <Link
           href={nextHref}
           className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors"
+          transitionTypes={['slide-forward']}
         >
           <span>Next</span>
           <ChevronRight size={20} />

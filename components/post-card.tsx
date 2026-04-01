@@ -16,7 +16,7 @@ export function PostCard({ post }: PostCardProps) {
   });
 
   return (
-    <Link href={`/posts/${post.slug}`} className="group block">
+    <Link href={`/posts/${post.slug}`} className="group block" transitionTypes={['slide-up']}>
       {/* Mobile: overlay layout — no view-transition-name to avoid duplicates with desktop */}
       <article className="sm:hidden relative aspect-video overflow-hidden">
         {post.image && (
