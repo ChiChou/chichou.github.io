@@ -41,7 +41,7 @@ export function PostCard({ post }: PostCardProps) {
       </article>
 
       {/* Desktop: side by side layout */}
-      <article className="hidden sm:flex sm:flex-row gap-5 2xl:gap-6">
+      <article className="hidden sm:flex sm:flex-row gap-5 2xl:gap-6 p-3 -m-3 rounded-xl transition-colors group-hover:bg-muted/50">
         {post.image && (
           <ViewTransition name={`post-image-${post.slug}`}>
             <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video rounded-lg overflow-hidden">
@@ -56,7 +56,7 @@ export function PostCard({ post }: PostCardProps) {
         <div className="flex-1 min-w-0 flex flex-col justify-center">
           <time className="text-xs 2xl:text-sm text-muted-foreground tracking-wide uppercase">{date}</time>
           <ViewTransition name={`post-title-${post.slug}`}>
-            <h2 className="mt-1.5 text-lg 2xl:text-xl font-semibold group-hover:text-muted-foreground transition-colors line-clamp-2">
+            <h2 className="mt-1.5 text-lg 2xl:text-xl font-semibold transition-colors line-clamp-2">
               {post.title}
             </h2>
           </ViewTransition>

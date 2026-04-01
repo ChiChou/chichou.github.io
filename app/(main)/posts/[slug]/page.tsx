@@ -366,7 +366,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
           {/* Prev/Next Navigation */}
           {(prev || next) && (
-            <nav className="mt-16 pt-8 border-t border-muted">
+            <nav className="mt-16 pt-8 border-t border-border/60">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {prev ? (
                   <Link

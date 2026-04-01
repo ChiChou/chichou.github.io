@@ -33,13 +33,12 @@ jobs:
       - name: Configure Pages
         id: pages
         uses: actions/configure-pages@v4
-        with:
-          static_site_generator: next
 
       - name: Build
         run: bun run build
         env:
           NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

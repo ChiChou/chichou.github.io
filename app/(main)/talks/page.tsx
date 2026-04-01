@@ -25,7 +25,7 @@ function TalkCard({ talk }: { talk: Talk }) {
   };
 
   return (
-    <article className="group">
+    <article className="group p-3 -m-3 rounded-xl transition-colors hover:bg-muted/50">
       {/* Cover */}
       <div className="aspect-video bg-muted rounded-lg overflow-hidden mb-4">
         {talk.cover ? (

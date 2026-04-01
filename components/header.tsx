@@ -1,7 +1,24 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Header() {
+  const pathname = usePathname();
+
+  function navClass(href: string) {
+    const isActive =
+      pathname === href ||
+      pathname.startsWith(href + "/") ||
+      (href === "/blog" && pathname.startsWith("/posts/"));
+    return `px-3 py-1.5 rounded-lg transition-colors ${
+      isActive
+        ? "text-foreground font-medium"
+        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+    }`;
+  }
+
   return (
     <header className="py-5 border-b border-border/40">
       <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 flex items-center justify-between">
@@ -17,22 +34,13 @@ export function Header() {
         </Link>
         <div className="flex items-center gap-6">
           <nav className="flex items-center gap-1 text-sm">
-            <Link
-              href="/blog"
-              className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
+            <Link href="/blog" className={navClass("/blog")}>
               Blog
             </Link>
-            <Link
-              href="/talks"
-              className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
+            <Link href="/talks" className={navClass("/talks")}>
               Talks
             </Link>
-            <Link
-              href="/about"
-              className="px-3 py-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-            >
+            <Link href="/about" className={navClass("/about")}>
               About
             </Link>
           </nav>

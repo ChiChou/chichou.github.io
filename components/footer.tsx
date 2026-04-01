@@ -7,7 +7,7 @@ import cameraIcon from "bootstrap-icons/icons/camera.svg";
 export function Footer() {
   return (
     <footer className="mt-auto border-t border-border/40 py-8">
-      <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8">
+      <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 space-y-4">
         <div className="flex justify-center gap-4">
           <a
             href="https://infosec.exchange/@codecolorist"
@@ -78,6 +78,9 @@ export function Footer() {
             />
           </a>
         </div>
+        <p className="text-center text-xs text-muted-foreground/60">
+          &copy; {new Date().getFullYear()} CodeColorist
+        </p>
       </div>
     </footer>
   );
