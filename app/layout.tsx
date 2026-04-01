@@ -20,8 +20,11 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
+  metadataBase: process.env.NEXT_PUBLIC_SITE_URL
+    ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
+    : undefined,
   title: "CodeColorist",
-  description: "Security Research mainly on macOS / iO",
+  description: "Security Research mainly on macOS / iOS",
 };
 
 export default function RootLayout({

@@ -40,10 +40,27 @@ export async function generateMetadata({
     if (!post.published) {
       return { title: "Post Not Found" };
     }
-    return {
+    const metadata: Metadata = {
       title: post.title,
       description: post.desc,
     };
+    if (post.image) {
+      const imageUrl = resolveImageUrl(post.image);
+      metadata.openGraph = {
+        title: post.title,
+        description: post.desc,
+        type: "article",
+        publishedTime: post.date,
+        images: [{ url: imageUrl }],
+      };
+      metadata.twitter = {
+        card: "summary_large_image",
+        title: post.title,
+        description: post.desc,
+        images: [imageUrl],
+      };
+    }
+    return metadata;
   } catch {
     return {
       title: "Post Not Found",
