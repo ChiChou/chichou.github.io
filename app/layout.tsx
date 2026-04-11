@@ -24,7 +24,14 @@ export const metadata: Metadata = {
     ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
     : undefined,
   title: "CodeColorist",
-  description: "Security Research mainly on macOS / iOS",
+  description: "Personal notes",
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: "/feed.xml", title: "CodeColorist's RSS Feed" },
+      ],
+    },
+  },
 };
 
 export default function RootLayout({
