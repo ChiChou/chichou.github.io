@@ -12,19 +12,28 @@ export function Header() {
       pathname === href ||
       pathname.startsWith(href + "/") ||
       (href === "/blog" && pathname.startsWith("/posts/"));
-    return `px-3 py-1.5 rounded-lg transition-colors ${
+    return `relative py-1 transition-colors duration-200 outline-none ${
       isActive
-        ? "text-foreground font-medium"
-        : "text-muted-foreground hover:text-foreground hover:bg-accent"
+        ? "text-foreground"
+        : "text-muted-foreground hover:text-foreground"
     }`;
   }
 
+  function isActive(href: string) {
+    return (
+      pathname === href ||
+      pathname.startsWith(href + "/") ||
+      (href === "/blog" && pathname.startsWith("/posts/"))
+    );
+  }
+
   return (
-    <header className="py-6">
-      <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 flex items-center justify-between">
+    <header className="sticky top-0 z-50">
+      <div className="absolute inset-0 bg-background/60 backdrop-blur-xl" />
+      <div className="relative flex items-center justify-center gap-8 px-4 pt-5 pb-4 lg:pt-8 lg:pb-6">
         <Link
           href="/"
-          className="text-xl font-semibold bg-clip-text text-transparent"
+          className="text-lg font-semibold tracking-tight leading-none bg-clip-text text-transparent"
           style={{
             backgroundImage:
               "linear-gradient(to right, #65b849 17%, #f7b423 17%, #f7b423 34%, #f58122 34%, #f58122 50%, #de3a3c 50%, #de3a3c 66%, #943f96 66%, #943f96 82%, #009fd9 82%, #009fd9 86%)",
@@ -32,20 +41,19 @@ export function Header() {
         >
           CodeColorist
         </Link>
-        <div className="flex items-center gap-6">
-          <nav className="flex items-center gap-1 text-sm">
-            <Link href="/blog" className={navClass("/blog")}>
-              Blog
-            </Link>
-            <Link href="/talks" className={navClass("/talks")}>
-              Talks
-            </Link>
-            <Link href="/about" className={navClass("/about")}>
-              About
-            </Link>
-          </nav>
-          <ThemeToggle />
-        </div>
+        {[
+          { href: "/blog", label: "Blog" },
+          { href: "/talks", label: "Talks" },
+          { href: "/about", label: "About" },
+        ].map(({ href, label }) => (
+          <Link key={href} href={href} className={navClass(href)}>
+            {label}
+            {isActive(href) && (
+              <span className="absolute -bottom-0.5 left-0 right-0 h-px bg-foreground" />
+            )}
+          </Link>
+        ))}
+        <ThemeToggle />
       </div>
     </header>
   );

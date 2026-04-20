@@ -6,6 +6,8 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
+    --color-cyber: var(--cyber);
+    --color-cyber-glow: var(--cyber-glow);
     --font-sans: var(--font-inter);
     --font-mono: var(--font-jetbrains-mono);
     --font-bold: var(--font-bebas-neue);
@@ -56,6 +58,8 @@
 
 :root {
     --radius: 0.625rem;
+    --cyber: oklch(0.75 0.15 180);
+    --cyber-glow: oklch(0.75 0.15 180 / 30%);
     --background: oklch(1 0 0);
     --foreground: oklch(0.145 0 0);
     --card: oklch(1 0 0);
@@ -90,6 +94,8 @@
 }
 
 .dark {
+    --cyber: oklch(0.8 0.18 175);
+    --cyber-glow: oklch(0.8 0.18 175 / 40%);
     --background: oklch(0.1 0 0);
     --foreground: oklch(0.92 0 0);
     --card: oklch(0.15 0 0);
@@ -285,93 +291,109 @@ pre code {
 
 /* View Transition animations */
 
-/* Default cross-fade for all navigations */
+/* Smooth spring-like easing */
+:root {
+    --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Default cross-fade with scale for all navigations */
 ::view-transition-old(root) {
-    animation: vt-fade-out 200ms ease-out both;
+    animation: vt-scale-fade-out 350ms var(--ease-out-expo) both;
 }
 
 ::view-transition-new(root) {
-    animation: vt-fade-in 200ms ease-in both;
+    animation: vt-scale-fade-in 400ms var(--ease-spring) both;
 }
 
 /* Slide up — entering a post from the list */
 :active-view-transition-type(slide-up) ::view-transition-old(root) {
-    animation: vt-slide-down-out 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-zoom-out 400ms var(--ease-out-expo) both;
 }
 
 :active-view-transition-type(slide-up) ::view-transition-new(root) {
-    animation: vt-slide-up-in 300ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-slide-up-in 450ms var(--ease-spring) both;
 }
 
 /* Slide forward — next post / next page */
 :active-view-transition-type(slide-forward) ::view-transition-old(root) {
-    animation: vt-slide-left-out 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-slide-left-out 350ms var(--ease-out-expo) both;
 }
 
 :active-view-transition-type(slide-forward) ::view-transition-new(root) {
-    animation: vt-slide-left-in 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-slide-left-in 400ms var(--ease-spring) both;
 }
 
 /* Slide back — previous post / previous page */
 :active-view-transition-type(slide-back) ::view-transition-old(root) {
-    animation: vt-slide-right-out 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-slide-right-out 350ms var(--ease-out-expo) both;
 }
 
 :active-view-transition-type(slide-back) ::view-transition-new(root) {
-    animation: vt-slide-right-in 250ms cubic-bezier(0.4, 0, 0.2, 1) both;
+    animation: vt-slide-right-in 400ms var(--ease-spring) both;
 }
 
-@keyframes vt-fade-out {
+@keyframes vt-scale-fade-out {
     to {
         opacity: 0;
+        transform: scale(0.98);
+        filter: blur(4px);
     }
 }
 
-@keyframes vt-fade-in {
+@keyframes vt-scale-fade-in {
     from {
         opacity: 0;
+        transform: scale(1.02);
+        filter: blur(4px);
+    }
+}
+
+@keyframes vt-zoom-out {
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+        filter: blur(8px);
     }
 }
 
 @keyframes vt-slide-up-in {
     from {
         opacity: 0;
-        transform: translateY(30px);
-    }
-}
-
-@keyframes vt-slide-down-out {
-    to {
-        opacity: 0;
-        transform: translateY(-15px);
+        transform: translateY(60px) scale(0.98);
+        filter: blur(4px);
     }
 }
 
 @keyframes vt-slide-left-out {
     to {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateX(-80px);
+        filter: blur(2px);
     }
 }
 
 @keyframes vt-slide-left-in {
     from {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateX(80px);
+        filter: blur(2px);
     }
 }
 
 @keyframes vt-slide-right-out {
     to {
         opacity: 0;
-        transform: translateX(30px);
+        transform: translateX(80px);
+        filter: blur(2px);
     }
 }
 
 @keyframes vt-slide-right-in {
     from {
         opacity: 0;
-        transform: translateX(-30px);
+        transform: translateX(-80px);
+        filter: blur(2px);
     }
 }
 
