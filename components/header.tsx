@@ -20,7 +20,7 @@ export function Header() {
   }
 
   return (
-    <header className="py-5 border-b border-border/40">
+    <header className="py-6">
       <div className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 flex items-center justify-between">
         <Link
           href="/"

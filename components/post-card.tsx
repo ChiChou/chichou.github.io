@@ -44,7 +44,7 @@ export function PostCard({ post }: PostCardProps) {
       <article className="hidden sm:flex sm:flex-row gap-5 2xl:gap-6 p-3 -m-3 rounded-xl transition-colors group-hover:bg-muted/50">
         {post.image && (
           <ViewTransition name={`post-image-${post.slug}`}>
-            <div className="sm:w-48 2xl:w-64 sm:shrink-0 aspect-video rounded-lg overflow-hidden">
+            <div className="sm:w-52 2xl:w-72 sm:shrink-0 aspect-video rounded-lg overflow-hidden">
               <OptimizedImage
                 src={post.image}
                 alt={post.title}
@@ -54,14 +54,14 @@ export function PostCard({ post }: PostCardProps) {
           </ViewTransition>
         )}
         <div className="flex-1 min-w-0 flex flex-col justify-center">
-          <time className="text-xs 2xl:text-sm text-muted-foreground tracking-wide uppercase">{date}</time>
+          <time className="text-sm 2xl:text-base text-muted-foreground tracking-wide uppercase">{date}</time>
           <ViewTransition name={`post-title-${post.slug}`}>
-            <h2 className="mt-1.5 text-lg 2xl:text-xl font-semibold transition-colors line-clamp-2">
+            <h2 className="mt-1.5 text-xl 2xl:text-2xl font-semibold transition-colors line-clamp-2">
               {post.title}
             </h2>
           </ViewTransition>
           {post.desc && (
-            <p className="mt-2 text-muted-foreground text-sm 2xl:text-base line-clamp-2 leading-relaxed">
+            <p className="mt-2 text-muted-foreground text-base 2xl:text-lg line-clamp-2 leading-relaxed">
               {post.desc}
             </p>
           )}

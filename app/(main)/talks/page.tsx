@@ -86,7 +86,7 @@ export default async function TalksPage() {
   const talks = await getAllTalks();
 
   return (
-    <main className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 pb-16 min-h-[calc(100vh-80px)] flex flex-col lg:justify-center">
+    <main className="max-w-2xl lg:max-w-5xl 2xl:max-w-7xl mx-auto px-4 2xl:px-8 py-8 lg:py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12 2xl:gap-x-12 2xl:gap-y-16">
         {talks.map((talk) => (
           <TalkCard key={talk.slug} talk={talk} />
