@@ -4,7 +4,7 @@ import matter from "gray-matter";
 
 const postsDirectory = path.join(process.cwd(), "_posts");
 
-export const POSTS_PER_PAGE = 5;
+export const POSTS_PER_PAGE = 6;
 
 export interface PostMeta {
   slug: string;

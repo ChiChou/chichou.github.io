@@ -1,6 +1,7 @@
 import type { Element, Root, Text } from "hast";
 
 import { compile, run } from "@mdx-js/mdx";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -370,15 +371,16 @@ export default async function PostPage({ params }: PostPageProps) {
       {(prev || next) && (
         <nav className="max-w-4xl mx-auto px-4 pb-16">
           <div className="pt-8 border-t border-border/60">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {prev ? (
                 <Link
                   href={`/posts/${prev.slug}/`}
-                  className="group flex gap-4 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
+                  className="group flex items-center gap-3 p-3 sm:p-4 rounded-xl border border-border/50 hover:border-border hover:bg-muted/30 transition-all"
                   transitionTypes={['slide-back']}
                 >
+                  <ChevronLeft className="w-5 h-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
                   {prev.image && (
-                    <div className="w-24 h-24 shrink-0 overflow-hidden rounded-lg">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 shrink-0 overflow-hidden rounded-lg">
                       <OptimizedImage
                         src={prev.image}
                         alt={prev.title}
@@ -390,7 +392,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     <span className="text-xs text-muted-foreground">
                       Previous
                     </span>
-                    <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                    <h3 className="mt-0.5 text-sm font-medium line-clamp-2 group-hover:text-foreground transition-colors">
                       {prev.title}
                     </h3>
                   </div>
@@ -401,11 +403,12 @@ export default async function PostPage({ params }: PostPageProps) {
               {next ? (
                 <Link
                   href={`/posts/${next.slug}/`}
-                  className="group flex gap-4 p-4 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors sm:flex-row-reverse sm:text-right"
+                  className="group flex items-center gap-3 p-3 sm:p-4 rounded-xl border border-border/50 hover:border-border hover:bg-muted/30 transition-all sm:flex-row-reverse sm:text-right"
                   transitionTypes={['slide-forward']}
                 >
+                  <ChevronRight className="w-5 h-5 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
                   {next.image && (
-                    <div className="w-24 h-24 shrink-0 overflow-hidden rounded-lg">
+                    <div className="w-12 h-12 sm:w-16 sm:h-16 shrink-0 overflow-hidden rounded-lg">
                       <OptimizedImage
                         src={next.image}
                         alt={next.title}
@@ -417,7 +420,7 @@ export default async function PostPage({ params }: PostPageProps) {
                     <span className="text-xs text-muted-foreground">
                       Next
                     </span>
-                    <h3 className="mt-1 font-medium line-clamp-2 group-hover:text-muted-foreground transition-colors">
+                    <h3 className="mt-0.5 text-sm font-medium line-clamp-2 group-hover:text-foreground transition-colors">
                       {next.title}
                     </h3>
                   </div>
