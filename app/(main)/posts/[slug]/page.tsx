@@ -358,7 +358,7 @@ export default async function PostPage({ params }: PostPageProps) {
         </header>
       )}
 
-      <main className="max-w-2xl mx-auto px-4 pb-16">
+      <main className="max-w-2xl mx-auto px-5 sm:px-4 pb-16">
         <article>
           <div className="prose-custom pt-8">
             <MDXContent components={mdxComponents} />
