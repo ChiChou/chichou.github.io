@@ -280,10 +280,10 @@ async function compileMDX(source: string) {
     outputFormat: "function-body",
     remarkPlugins: [remarkGfm],
     rehypePlugins: [
+      rehypeShiki,
       rehypeRaw,
       rehypeSlug,
       rehypeAutolinkHeadings,
-      rehypeShiki,
       rehypeImageUrls,
       rehypeYouTubeEmbed,
     ],
