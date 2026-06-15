@@ -5,8 +5,8 @@ image:  img/2026-06-15-ios27-reworked-stub-islands/ios27.webp
 desc:   "How iOS 27 trims the dyld shared cache and updates stub island trampolines"
 ---
 
-At WWDC 2026, Apple announced iOS 27 with performance improvements, but of course the keynote didn't cover much of the details. 
-Below are a few observations from the disassembly — some may relate to those performance gains, some may not. 
+At WWDC 2026, Apple announced iOS 27 with performance improvements, but of course the keynote didn't cover much of the implementation details. 
+Below are a few observations from the disassembly — some may relate to those performance boosts, some may not. 
 *This article only focuses on aarch64 implementations.*
 
 ## How Stubs Worked Before iOS 27
@@ -105,16 +105,14 @@ to `relativeMethodSelectorBaseAddressOffset`, instead of to the address of that 
 In version 2 of the Objective-C optimizations, dyld also applies this same offset 
 schema to method type encoding strings.
 
-The throughline: Apple is actively removing redundant sections.
-
 ### Rethinking the stub trampolines
 
 We've mentioned two types of stubs: one for cross-module symbols and one for Objective-C method calls.
 
 On iOS 27, the old `__auth_stubs` style — `ADRL` and `LDR` to load a function pointer 
-from the GOT, then `BRAA` to branch with pointer validation — still exists. But there are two new variants.
+from the GOT, then `BRAA` to branch with pointer authentication — still exists. But there are two new variants.
 
-The first has no memory load nor pointer validation:
+The first has no memory load nor pointer authentication:
 
 ```
 _stubs: _open
@@ -139,23 +137,20 @@ If you have no clue what it is supposed to do, try simulating the arithmetic ins
       = 0x2BEE60060
 ```
 
-`0x2BEE60060` is the address of `libsystem_m.dylib!_acosl`.
+In this example, `0x2BEE60060` is the address of `libsystem_m.dylib!_acosl`.
 
 So the first one can reach ±4 GiB from the stub: the `ADRP` gives a page-granular displacement of ±4 GiB,
 and then `ADD` fills in the byte offset within that 4 KiB page.
-Byte-exact and symmetric in both directions — but capped at 4 GiB.
 
-The second variant exists for everything that lives further than that.
-Notice that our example target, `0x2BEE60060`, sits `0x136E00000` ≈ 4.857 GiB away from
-the stub — already past what a single ADRP+ADD can encode.
+The second variant exists for things that live further than that. Notice that our example target,
+`0x2BEE60060`, sits `0x136E00000` ≈ 4.857 GiB away from the stub — already past what a single `ADRL` can encode.
 
 In the instruction `ADD X16, X16, X17, LSL #21`, `imm16 << 21` is a multiple of 2 MiB, ranging up to `0xFFFF << 21` ≈ 128 GiB.
-Add the two together and the stub can reach up to roughly +128 GiB — about 32 times the range of `ADRL`.
 Note that this displacement is unsigned, so the range is forward-biased, unlike `ADRL`, which can also reach backward.
 
 The motivation behind this pattern is easy to guess: performance.
 
-This new arithmetic way to encode large offsets eliminates the memory load and pointer validation overhead.
+This new arithmetic way to encode large offsets eliminates the memory load and pointer authentication overhead.
 
 ### Objective-C trampolines
 
