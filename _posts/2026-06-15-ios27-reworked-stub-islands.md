@@ -1,13 +1,13 @@
 ---
-title:	"Inside iOS 27's Reworked Stub Islands"
-date:	2026-06-15
-image:  img/2026-06-15-ios27-reworked-stub-islands/ios27.webp
-desc:   "How iOS 27 trims the dyld shared cache and updates stub island trampolines"
+title: "Inside iOS 27's Reworked Stub Islands"
+date: 2026-06-15
+image: img/2026-06-15-ios27-reworked-stub-islands/ios27.webp
+desc: "How iOS 27 trims the dyld shared cache and updates stub island trampolines"
 ---
 
-At WWDC 2026, Apple announced iOS 27 with performance improvements, but of course the keynote didn't cover much of the implementation details. 
-Below are a few observations from the disassembly — some may relate to those performance boosts, some may not. 
-*This article only focuses on aarch64 implementations.*
+At WWDC 2026, Apple announced iOS 27 with performance improvements, but of course the keynote didn't cover much of the implementation details.
+Below are a few observations from the disassembly — some may relate to those performance boosts, some may not.
+_This article only focuses on aarch64 implementations._
 
 ## How Stubs Worked Before iOS 27
 
@@ -31,15 +31,18 @@ LDR             X16, [X17] ; load from GOT entry
 BRAA            X16, X17 ; jump to the resolved function
 ```
 
-Where `_os_unfair_lock_unlock_ptr` is an entry in `__auth_got`. The linker (dyld) will bind (and sign) the pointer to the actual implementation (`__imp__os_unfair_lock_unlock`) and store it in `__auth_got`.
+Where `_os_unfair_lock_unlock_ptr` is an entry in `__auth_got`. The linker (dyld) will bind (and sign) the pointer to the
+actual implementation (`__imp__os_unfair_lock_unlock`) and store it in `__auth_got`.
 
 ```
 _os_unfair_lock_unlock_ptr DCQ __imp__os_unfair_lock_unlock
 ```
 
 In dyld_shared_cache, most of `__auth_stubs` and `__auth_got` are aggregated into stub island pages, which don't belong to any specific binary.
+GOT uses rebasing instead of binding.
 
-There is still a per-binary `__auth_stubs` section in the dyld_shared_cache, however most of the time you won't find the actual cross-references to them, because the branch instructions are replaced to point to the stub island pages.
+There is still a per-binary `__auth_stubs` section in the dyld_shared_cache, however most of the time you won't find the
+actual cross-references to them, because the branch instructions are replaced to point to the stub island pages.
 
 iOS still makes heavy use of Objective-C, so there is first-class support for method calls (message dispatch).
 
@@ -58,15 +61,19 @@ BRAA            X16, X17 ; dispatch message
 
 ### Redundant sections are gone
 
-As mentioned, after dyld cache optimization, branch instructions to `__objc_stubs` are updated to jump to stub island pages, while the unused sections remain in each binary.
+As mentioned, after dyld cache optimization, branch instructions to `__auth_stubs` are updated to jump to stub island pages,
+while the unused sections remain in each binary.
 
 On iOS 27 beta, those sections are removed; only the stub island pages in the dyld_shared_cache remain.
 
-Some other sections related to Objective-C are also removed from source binaries, such as `__objc_methname`, `__objc_methtype` and `__objc_classname`. Now the data references (selectors, method types, class names) point to the `__OBJC_RO` region.
+Some other sections related to Objective-C are also removed from source binaries, such as `__objc_methname`, `__objc_methtype`
+and `__objc_classname`. Now the data references (selectors, method types, class names) point to the `__OBJC_RO` region.
 
 It's worth noting that a while ago, the schema of `__objc2_meth_list` changed.
 
-`__objc2_meth_list` contains a list of method information for Objective-C methods, including each method's selector, type encoding, and implementation pointer. The selector field used to be an offset from the field itself. Then the dyld_shared_cache optimizer changed the semantics to use a global base address for selector offsets, which can be found through the cache header:
+`__objc2_meth_list` contains a list of method information for Objective-C methods, including each method's selector,
+type encoding, and implementation pointer. The selector field used to be an offset from the field itself.
+Then the dyld_shared_cache optimizer changed the semantics to use a global base address for selector offsets, which can be found through the cache header:
 
 ```c
 struct dyld_cache_header {
@@ -99,17 +106,17 @@ struct VIS_HIDDEN ObjCOptimizationHeader
 };
 ```
 
-So on iOS 26, to get the selector string, you need to add the selector offset 
+So on iOS 26, to get the selector string, you need to add the selector offset
 to `relativeMethodSelectorBaseAddressOffset`, instead of to the address of that field itself. 🤯
 
-In version 2 of the Objective-C optimizations, dyld also applies this same offset 
+In version 2 of the Objective-C optimizations, dyld also applies this same offset
 schema to method type encoding strings.
 
 ### Rethinking the stub trampolines
 
 We've mentioned two types of stubs: one for cross-module symbols and one for Objective-C method calls.
 
-On iOS 27, the old `__auth_stubs` style — `ADRL` and `LDR` to load a function pointer 
+On iOS 27, the old `__auth_stubs` style — `ADRL` and `LDR` to load a function pointer
 from the GOT, then `BRAA` to branch with pointer authentication — still exists. But there are two new variants.
 
 The first has no memory load nor pointer authentication:
@@ -162,7 +169,7 @@ B               _objc_msgSend ; /usr/lib/objc/libobjcMsgSend.dylib
 ```
 
 It's shorter than the previous load-and-branch pair. But wait a second.
-This branch instruction can only reach ±128 MB from the current PC. 
+This branch instruction can only reach ±128 MB from the current PC.
 The dyld_shared_cache is several gigabytes — how can it handle all frameworks?
 
 Write a parser to dump the image list from the cache, and we'll see the answer:
@@ -173,5 +180,32 @@ Write a parser to dump the image list from the cache, and we'll see the answer:
 - ...
 - /usr/lib/objc/libobjcMsgSend33.dylib
 
-The optimizer makes dozens of copies of the same `objc_msgSend` code and distributes them across the cache. 
+The optimizer makes dozens of copies of the same `objc_msgSend` code and distributes them across the cache.
 Every binary then branches to whichever copy sits within the range.
+
+### Reaching the selectors
+
+That solves the `B _objc_msgSend` half. But the first instruction, `ADRL X1, sel_length`, raises the same question in reverse.
+
+`ADRL` loads the selector pointer directly into `X1`, pointing into the consolidated `__OBJC_RO` region we saw earlier —
+there's no longer an `LDR` from `__objc_selrefs`.
+
+The reach is the `ADRP` page range: ±4 GiB. Yet the selectors live in a single shared region, while the binaries
+referencing them are scattered across a cache that is well over 4 GiB. How can one `ADRL` in _every_ binary land on the same `__OBJC_RO`?
+
+The trick is in the layout.
+
+Take `24A5355q__iPhone18,1/dyld_shared_cache_arm64e` as an example, take the address range from its header:
+
+```
+shared_region_start   0x180000000
+shared_region_end     0x2fb8b8000   ; size 0x17b8b8000, 5.93 GiB
+```
+
+Even though `libobjc` is the very first image, one segment is mapped far from the start of the cache:
+
+```
+libobjc.A.dylib:__OBJC_RO             0x1f552e240 - 0x1fcff44e8
+```
+
+It's roughly the middle of the cache, and the `ADRL` range covers both ends.
