@@ -4,10 +4,10 @@ A Next.js static blog deployed to GitHub Pages.
 
 ## Runtime
 
-This project uses **Bun** as its JavaScript runtime and package manager. Always use `bun` instead of `npm`, `pnpm`, or `node`.
+This project uses plain **Node.js** (see `.nvmrc`) with **npm**. Do not use `bun` or `pnpm`.
 
-- Install dependencies: `bun install`
-- Dev server: `bun run dev`
-- Build: `bun run build`
-- Lint: `bun run lint`
-- Run scripts: `bun run <script>` or `bun <file.ts>`
+- Install dependencies: `npm ci`
+- Dev server: `npm run dev`
+- Build: `npm run build`
+- Lint: `npm run lint`
+- Run scripts: `npm run <script>` or `node <file.mjs>`
