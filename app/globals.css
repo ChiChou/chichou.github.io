@@ -138,6 +138,81 @@
     }
 }
 
+/* Landing page: seamless Mobile Safari chrome
+   https://joshpuckett.me/seamless-mobile-safari
+   Safari extends the colour of position:fixed elements touching the top and
+   bottom edge of the viewport behind its status bar and toolbar. Each edge is
+   a thin solid strip (at least 5px visible) plus a short fade so there is no
+   hard line against the video. */
+:root:has(.landing) {
+    --edge-top-background: #141110;
+    --edge-bottom-background: #080707;
+    background: var(--edge-top-background);
+}
+
+body:has(.landing) {
+    background: var(--edge-bottom-background);
+}
+
+.landing-safe-area {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right)
+        env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+
+.edge-top::before,
+.edge-top::after,
+.edge-bottom::before,
+.edge-bottom::after {
+    content: "";
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 25; /* above the video and gradient, below the text */
+    pointer-events: none;
+}
+
+/* Solid strips: 12px tall, 7px off-screen, so 5px stays visible for sampling
+   (more when there is a safe-area inset to cover). */
+.edge-top::after,
+.edge-bottom::after {
+    height: max(12px, calc(env(safe-area-inset-top, 0px) + 7px));
+}
+
+.edge-top::after {
+    top: -7px;
+    background: var(--edge-top-background);
+}
+
+.edge-bottom::after {
+    bottom: -7px;
+    height: max(12px, calc(env(safe-area-inset-bottom, 0px) + 7px));
+    background: var(--edge-bottom-background);
+}
+
+/* Fades from the strip colour into the page */
+.edge-top::before,
+.edge-bottom::before {
+    height: 48px;
+}
+
+.edge-top::before {
+    top: max(5px, env(safe-area-inset-top, 0px));
+    background: linear-gradient(
+        to bottom,
+        var(--edge-top-background),
+        transparent
+    );
+}
+
+.edge-bottom::before {
+    bottom: max(5px, env(safe-area-inset-bottom, 0px));
+    background: linear-gradient(
+        to top,
+        var(--edge-bottom-background),
+        transparent
+    );
+}
+
 /* Shiki code block styling */
 .shiki,
 .shiki-wrapper pre,

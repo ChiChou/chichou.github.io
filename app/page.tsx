@@ -1,3 +1,4 @@
+import type { Viewport } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { resolveImageUrl } from "@/lib/config";
@@ -6,10 +7,23 @@ import githubIcon from "bootstrap-icons/icons/github.svg";
 import linkedinIcon from "bootstrap-icons/icons/linkedin.svg";
 import cameraIcon from "bootstrap-icons/icons/camera.svg";
 
+// Seamless Mobile Safari: let the page run under the status bar / toolbars
+// and tell Safari which colour to paint its chrome.
+// https://joshpuckett.me/seamless-mobile-safari
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#141110",
+};
+
 export default function Home() {
   return (
-    <div className="h-dvh w-screen bg-gray-950">
-      <header className="relative flex size-full items-end overflow-hidden">
+    <div className="landing h-dvh w-screen bg-gray-950">
+      {/* Fixed edge strips Safari samples to colour its top/bottom chrome */}
+      <div className="edge-top" aria-hidden="true" />
+      <div className="edge-bottom" aria-hidden="true" />
+      <header className="relative flex size-full items-end overflow-hidden landing-safe-area">
         <div className="relative z-30 2xl:m-40 max-2xl:m-20 max-xl:m-10 font-bold">
           <h1 className="2xl:text-9xl xl:text-7xl max-xl:text-5xl animate-landing drop-shadow-lg text-gray-100">
             CodeColorist
